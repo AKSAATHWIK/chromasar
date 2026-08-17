@@ -86,16 +86,31 @@ python -m pip install -r chromasar/requirements.txt
 cd frontend && npm install
 ```
 
-Then copy the data. On the **build** laptop, with a USB drive plugged in:
+Then get the data. **The easy way - straight from GitHub, no USB drive, no second person:**
+
+```bash
+gh auth login
+```
+
+```bash
+python migrate.py fetch
+```
+
+That pulls the two checkpoints and both datasets from the `demo-assets-v1` release and
+extracts them into `~/sih-data`. Re-run it any time; it skips what is already there. The
+repo is private, hence the `gh auth login` first.
+
+**The offline way**, if the college wifi is the only network and you want everything in
+hand beforehand - on the **build** laptop, with a USB drive plugged in:
 
 ```bash
 python migrate.py pack E:\
 ```
 
-That copies ~3.4 GB - the two checkpoints, `sen1floods11/` and `sen1-2/`. It deliberately
-leaves behind `sen12ms/` (~50 GB) and `runs/` (~1.6 GB): both are training-only and the
-server never reads them. Copy that folder onto the demo laptop anywhere you like, then
-point the app at it:
+Either route moves ~3.4 GB: the two checkpoints, `sen1floods11/` and `sen1-2/`. Both
+deliberately leave behind `sen12ms/` (~50 GB) and `runs/` (~1.6 GB), which are
+training-only and the server never reads. With the USB route, copy the folder onto the
+demo laptop anywhere you like, then point the app at it:
 
 ```bash
 setx SIH_DATA "D:\sih-data"

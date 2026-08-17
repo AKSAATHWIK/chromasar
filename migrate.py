@@ -9,7 +9,8 @@ script exists instead of a paragraph in a README.
 
 You do not need 57 GB. The demo reads three things; the other 50.5 GB is training-only.
 
-    python migrate.py pack E:\\            # on THIS laptop: copy the ~3.4 GB it needs
+    python migrate.py fetch                # on the NEW laptop: pull it from GitHub
+    python migrate.py pack E:\\            # or on THIS one: copy it to a USB drive
     python migrate.py check                # on EITHER: is this machine demo-ready?
 
 `check` is the one that matters. Run it on the demo laptop with the wifi OFF, and it
@@ -23,8 +24,11 @@ import json
 import os
 import shutil
 import socket
+import subprocess
 import sys
+import tempfile
 import time
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -50,6 +54,21 @@ SKIPPED = [
     ("runs", "~1.6 GB of training logs and intermediate epochs"),
     ("checkpoints/backup-pre-sharpen", "superseded weights, kept only as a rollback on the build box"),
     ("checkpoints/sharpen", "the retrain's raw output; colorization.pt is the copy that ships"),
+]
+
+#: The same payload, published as GitHub release assets so a new machine needs no USB
+#: drive and no second person. Release assets allow 2 GB each and do not count against
+#: repository size, which is why this works where committing the files would not:
+#: git rejects anything over 100 MB, and the imagery is 3.2 GB.
+REPO = "AKSAATHWIK/chromasar"
+RELEASE = "demo-assets-v1"
+
+#: (asset name, destination relative to the data root, kind)
+ASSETS = [
+    ("flood_resnet34.pt", "checkpoints/flood_resnet34.pt", "file"),
+    ("colorization.pt", "checkpoints/colorization.pt", "file"),
+    ("sen1floods11.zip", "sen1floods11", "zip"),
+    ("sen1-2.zip", "sen1-2", "zip"),
 ]
 
 REQUIRED_IMPORTS = [
@@ -172,6 +191,69 @@ def pack(dest_arg: str) -> int:
     return 0 if ok else 1
 
 
+def gh_exe() -> str | None:
+    """gh is not always on PATH right after its installer runs."""
+    found = shutil.which("gh")
+    if found:
+        return found
+    for c in (r"C:\Program Files\GitHub CLI\gh.exe",
+              r"C:\Program Files (x86)\GitHub CLI\gh.exe"):
+        if Path(c).exists():
+            return c
+    return None
+
+
+def fetch() -> int:
+    """Pull the runtime assets from the GitHub release into the data root."""
+    gh = gh_exe()
+    if not gh:
+        print("GitHub CLI not found. Install it, then `gh auth login`:")
+        print("  winget install --id GitHub.cli")
+        return 1
+    if subprocess.run([gh, "auth", "status"], capture_output=True).returncode != 0:
+        print("Not logged in to GitHub. The repo is private, so this needs auth:")
+        print("  gh auth login")
+        return 1
+
+    root = data_root()
+    root.mkdir(parents=True, exist_ok=True)
+    print(f"target : {root}")
+    print(f"source : github.com/{REPO}  release {RELEASE}\n")
+
+    for asset, rel, kind in ASSETS:
+        dest = root / rel
+        if kind == "file" and dest.exists() and dest.stat().st_size > 1 << 20:
+            print(f"  have   {rel}  ({human(dest.stat().st_size)})")
+            continue
+        if kind == "zip" and dest.exists() and any(dest.iterdir()):
+            print(f"  have   {rel}/  ({human(size_of(dest))})")
+            continue
+
+        with tempfile.TemporaryDirectory() as td:
+            print(f"  get    {asset} ...", flush=True)
+            r = subprocess.run(
+                [gh, "release", "download", RELEASE, "--repo", REPO,
+                 "--pattern", asset, "--dir", td, "--clobber"],
+                capture_output=True, text=True)
+            if r.returncode != 0:
+                print(f"         FAILED: {r.stderr.strip()[:200]}")
+                return 1
+            got = Path(td) / asset
+            if kind == "file":
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.move(str(got), dest)
+                print(f"         -> {rel}  ({human(dest.stat().st_size)})")
+            else:
+                print(f"         extracting {human(got.stat().st_size)} ...", flush=True)
+                dest.mkdir(parents=True, exist_ok=True)
+                with zipfile.ZipFile(got) as z:
+                    z.extractall(dest)
+                print(f"         -> {rel}/  ({human(size_of(dest))})")
+
+    print("\nfetched. Now verify:\n  python migrate.py check")
+    return 0
+
+
 def check() -> int:
     rows, fatal = [], 0
 
@@ -231,6 +313,8 @@ def main() -> int:
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "pack" and len(sys.argv) > 2:
         return pack(sys.argv[2])
+    if cmd == "fetch":
+        return fetch()
     if cmd == "check":
         return check()
     print(__doc__)

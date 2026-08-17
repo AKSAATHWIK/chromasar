@@ -70,15 +70,24 @@ python -m pip install -r chromasar/requirements.txt
 cd frontend && npm install
 ```
 
-The trained weights are **not in this repo** - they live under `SIH_DATA` (default
-`~/sih-data`) along with the benchmark corpus. See `migrate.py` for moving them to another
-machine, and `TEAM_NOTES.md` section 3 for the full runbook.
+The trained weights are **not in this repo**. They are 93.5 MB each and the benchmark
+imagery is another 3.2 GB, which is past what git will carry, so they are published as
+release assets instead and land under `SIH_DATA` (default `~/sih-data`):
+
+```bash
+python migrate.py fetch
+```
+
+That pulls both checkpoints and both datasets from the `demo-assets-v1` release and
+extracts them into the right layout. It is idempotent - re-run it and it skips whatever
+is already in place. (Needs `gh auth login` while the repo is private.)
 
 ```bash
 python migrate.py check
 ```
 
-That verifies the environment, the data, and the ports before you trust it. Then:
+That verifies the environment, the data, and the ports before you trust it - every line
+must read PASS. Then:
 
 ```bash
 python webapp/server.py
