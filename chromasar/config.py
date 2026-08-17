@@ -1,17 +1,22 @@
 """Single source of truth for where data lives.
 
-Every script imported hardcoded `C:\\Users\\AKSAA\\sih-data\\...`, which meant nobody
-else on the team could run any of it. Paths now resolve in this order:
+Every script imported a hardcoded absolute path under one developer's profile, which
+meant nobody else on the team could run any of it. Paths now resolve in this order:
 
     1. the --dest / --data flag, if given
     2. the SIH_DATA environment variable
     3. ~/sih-data
 
-Set it once per machine and everything follows:
+If your data sits at `%USERPROFILE%\\sih-data` you need to set nothing at all - that is
+already the default. Only set the variable when the data lives somewhere else:
 
-    Windows (PowerShell):  $env:SIH_DATA = "D:\\sih-data"
-    Windows (persistent):  setx SIH_DATA "D:\\sih-data"
+    Windows (this shell):  $env:SIH_DATA = "D:\\sih-data"
+    Windows (persistent):  setx SIH_DATA "D:\\sih-data"     # NOT this shell - open a new one
     Linux / macOS:         export SIH_DATA=~/sih-data
+
+Point it at a folder that does not exist and you are worse off than leaving it unset,
+because a set-but-wrong value overrides the working default. `python migrate.py check`
+tells you which root resolved and whether everything it needs is actually there.
 
 Data deliberately lives OUTSIDE the OneDrive-synced project folder - several GB of
 training patches inside a synced directory triggers a very unhappy upload.

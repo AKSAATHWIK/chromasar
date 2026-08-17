@@ -110,7 +110,7 @@ SEN12MS  ftp://m1474000:m1474000@dataserv.ub.tum.de/
 Password is the collection ID. `scripts/download_sen12.py` handles stage 1; it is resumable,
 verifies that every SAR patch has its matching optical patch, and skips files already present.
 
-**Data lives outside OneDrive** (`C:\Users\AKSAA\sih-data\`) — putting several GB of training
+**Data lives outside OneDrive** (`%USERPROFILE%\sih-data\`) — putting several GB of training
 patches inside the synced Desktop folder would kick off a very unhappy OneDrive upload.
 
 ---
