@@ -231,12 +231,25 @@ def fetch() -> int:
 
         with tempfile.TemporaryDirectory() as td:
             print(f"  get    {asset} ...", flush=True)
-            r = subprocess.run(
-                [gh, "release", "download", RELEASE, "--repo", REPO,
-                 "--pattern", asset, "--dir", td, "--clobber"],
-                capture_output=True, text=True)
-            if r.returncode != 0:
-                print(f"         FAILED: {r.stderr.strip()[:200]}")
+            # Retry deliberately. GitHub returns transient 404s and 503s on these
+            # endpoints - we watched the SAME release read "not found" twice and then
+            # answer normally on the third call. A one-shot download turns a blip into
+            # a missing model, and you would find out at the venue.
+            r = None
+            for attempt in range(1, 5):
+                r = subprocess.run(
+                    [gh, "release", "download", RELEASE, "--repo", REPO,
+                     "--pattern", asset, "--dir", td, "--clobber"],
+                    capture_output=True, text=True)
+                if r.returncode == 0 and (Path(td) / asset).exists():
+                    break
+                wait = 5 * attempt
+                print(f"         attempt {attempt} failed "
+                      f"({r.stderr.strip()[:80]}); retrying in {wait}s", flush=True)
+                time.sleep(wait)
+            if r is None or r.returncode != 0 or not (Path(td) / asset).exists():
+                print(f"         FAILED after 4 attempts: {r.stderr.strip()[:200] if r else ''}")
+                print("         Re-run `python migrate.py fetch` - it resumes.")
                 return 1
             got = Path(td) / asset
             if kind == "file":
