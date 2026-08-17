@@ -1,0 +1,12 @@
+# ChromaSAR — SAR colorization + flood mapping
+# python -m pip install -r requirements.txt
+numpy>=1.26,<3
+pandas>=2.2,<3          # pinned <3: streamlit and others still require it
+pillow>=10.0
+matplotlib>=3.8
+tifffile>=2024.1        # Sen1Floods11 multi-band GeoTIFF
+imagecodecs>=2024.1     # compressed TIFF support for tifffile
+torch>=2.2              # CPU wheel is fine locally; GPU only on Modal
+modal>=1.0              # GPU training
+# optional, for the pretrained-encoder experiments
+# segmentation-models-pytorch>=0.3

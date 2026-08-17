@@ -1,0 +1,4 @@
+# Optimal ship routing (SIH1658) — pure CPU, no GPU or ML runtime needed
+numpy>=1.26,<3
+matplotlib>=3.8
+global-land-mask>=1.0   # offline land/sea mask for navigability

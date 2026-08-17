@@ -1,0 +1,639 @@
+{
+  "split": "test",
+  "threshold": 0.5,
+  "tta": true,
+  "n": 89,
+  "total_water_km2": 308.85,
+  "permanent_km2": 105.57,
+  "flood_km2": 203.27,
+  "flood_only": {
+    "iou": 0.5477203805592527,
+    "precision": 0.7263961142544616,
+    "recall": 0.6900883726310203
+  },
+  "chips": [
+    {
+      "name": "Ghana_313799",
+      "water_km2": 0.213,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.213,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Ghana_1078550",
+      "water_km2": 0.012,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.012,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Ghana_97059",
+      "water_km2": 0.037,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.037,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Ghana_359826",
+      "water_km2": 0.25,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.25,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Ghana_319168",
+      "water_km2": 4.625,
+      "permanent_km2": 0.0,
+      "flood_km2": 4.625,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Ghana_866994",
+      "water_km2": 19.961,
+      "permanent_km2": 15.891,
+      "flood_km2": 4.071,
+      "flood_frac_of_water": 0.204
+    },
+    {
+      "name": "Ghana_406026",
+      "water_km2": 0.476,
+      "permanent_km2": 0.001,
+      "flood_km2": 0.475,
+      "flood_frac_of_water": 0.998
+    },
+    {
+      "name": "Ghana_53713",
+      "water_km2": 0.0,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.0,
+      "flood_frac_of_water": 0.0
+    },
+    {
+      "name": "Ghana_83483",
+      "water_km2": 0.0,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.0,
+      "flood_frac_of_water": 0.0
+    },
+    {
+      "name": "Ghana_167233",
+      "water_km2": 0.0,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.0,
+      "flood_frac_of_water": 0.0
+    },
+    {
+      "name": "Ghana_141271",
+      "water_km2": 0.0,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.0,
+      "flood_frac_of_water": 0.0
+    },
+    {
+      "name": "India_900498",
+      "water_km2": 14.009,
+      "permanent_km2": 5.583,
+      "flood_km2": 8.426,
+      "flood_frac_of_water": 0.601
+    },
+    {
+      "name": "India_591317",
+      "water_km2": 12.348,
+      "permanent_km2": 7.721,
+      "flood_km2": 4.627,
+      "flood_frac_of_water": 0.375
+    },
+    {
+      "name": "India_747992",
+      "water_km2": 3.845,
+      "permanent_km2": 0.0,
+      "flood_km2": 3.845,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "India_79637",
+      "water_km2": 0.118,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.118,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "India_952728",
+      "water_km2": 0.512,
+      "permanent_km2": 0.02,
+      "flood_km2": 0.491,
+      "flood_frac_of_water": 0.961
+    },
+    {
+      "name": "India_828067",
+      "water_km2": 0.545,
+      "permanent_km2": 0.054,
+      "flood_km2": 0.492,
+      "flood_frac_of_water": 0.902
+    },
+    {
+      "name": "India_570384",
+      "water_km2": 1.402,
+      "permanent_km2": 0.437,
+      "flood_km2": 0.964,
+      "flood_frac_of_water": 0.688
+    },
+    {
+      "name": "India_44475",
+      "water_km2": 0.007,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.007,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "India_80221",
+      "water_km2": 16.413,
+      "permanent_km2": 4.694,
+      "flood_km2": 11.719,
+      "flood_frac_of_water": 0.714
+    },
+    {
+      "name": "India_1018327",
+      "water_km2": 2.816,
+      "permanent_km2": 0.266,
+      "flood_km2": 2.55,
+      "flood_frac_of_water": 0.906
+    },
+    {
+      "name": "India_592446",
+      "water_km2": 1.465,
+      "permanent_km2": 0.701,
+      "flood_km2": 0.764,
+      "flood_frac_of_water": 0.521
+    },
+    {
+      "name": "India_772630",
+      "water_km2": 0.0,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.0,
+      "flood_frac_of_water": 0.0
+    },
+    {
+      "name": "India_631692",
+      "water_km2": 0.025,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.025,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "India_399883",
+      "water_km2": 15.902,
+      "permanent_km2": 3.342,
+      "flood_km2": 12.561,
+      "flood_frac_of_water": 0.79
+    },
+    {
+      "name": "Mekong_333434",
+      "water_km2": 0.352,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.352,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Mekong_45934",
+      "water_km2": 0.01,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.01,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Mekong_1443339",
+      "water_km2": 19.115,
+      "permanent_km2": 2.209,
+      "flood_km2": 16.907,
+      "flood_frac_of_water": 0.884
+    },
+    {
+      "name": "Mekong_382276",
+      "water_km2": 1.044,
+      "permanent_km2": 0.0,
+      "flood_km2": 1.044,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Mekong_254910",
+      "water_km2": 1.598,
+      "permanent_km2": 0.0,
+      "flood_km2": 1.598,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Mekong_424793",
+      "water_km2": 0.508,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.508,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Nigeria_417184",
+      "water_km2": 15.233,
+      "permanent_km2": 0.005,
+      "flood_km2": 15.228,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Nigeria_225131",
+      "water_km2": 0.026,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.026,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Nigeria_812045",
+      "water_km2": 14.766,
+      "permanent_km2": 1.657,
+      "flood_km2": 13.109,
+      "flood_frac_of_water": 0.888
+    },
+    {
+      "name": "Nigeria_22088",
+      "water_km2": 5.341,
+      "permanent_km2": 0.0,
+      "flood_km2": 5.341,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Pakistan_849790",
+      "water_km2": 4.931,
+      "permanent_km2": 0.0,
+      "flood_km2": 4.931,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Pakistan_664885",
+      "water_km2": 3.127,
+      "permanent_km2": 2.925,
+      "flood_km2": 0.203,
+      "flood_frac_of_water": 0.065
+    },
+    {
+      "name": "Pakistan_694942",
+      "water_km2": 4.466,
+      "permanent_km2": 0.0,
+      "flood_km2": 4.466,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Pakistan_70625",
+      "water_km2": 1.581,
+      "permanent_km2": 0.138,
+      "flood_km2": 1.443,
+      "flood_frac_of_water": 0.913
+    },
+    {
+      "name": "Pakistan_528249",
+      "water_km2": 3.293,
+      "permanent_km2": 0.0,
+      "flood_km2": 3.293,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Pakistan_167553",
+      "water_km2": 1.666,
+      "permanent_km2": 0.0,
+      "flood_km2": 1.666,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Paraguay_913449",
+      "water_km2": 0.772,
+      "permanent_km2": 0.002,
+      "flood_km2": 0.77,
+      "flood_frac_of_water": 0.998
+    },
+    {
+      "name": "Paraguay_280900",
+      "water_km2": 0.559,
+      "permanent_km2": 0.026,
+      "flood_km2": 0.533,
+      "flood_frac_of_water": 0.954
+    },
+    {
+      "name": "Paraguay_790830",
+      "water_km2": 3.313,
+      "permanent_km2": 2.574,
+      "flood_km2": 0.739,
+      "flood_frac_of_water": 0.223
+    },
+    {
+      "name": "Paraguay_232281",
+      "water_km2": 4.115,
+      "permanent_km2": 0.0,
+      "flood_km2": 4.115,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Paraguay_271769",
+      "water_km2": 0.268,
+      "permanent_km2": 0.007,
+      "flood_km2": 0.261,
+      "flood_frac_of_water": 0.973
+    },
+    {
+      "name": "Paraguay_40936",
+      "water_km2": 0.954,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.954,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Paraguay_1029191",
+      "water_km2": 5.325,
+      "permanent_km2": 3.78,
+      "flood_km2": 1.545,
+      "flood_frac_of_water": 0.29
+    },
+    {
+      "name": "Paraguay_59731",
+      "water_km2": 0.524,
+      "permanent_km2": 0.36,
+      "flood_km2": 0.165,
+      "flood_frac_of_water": 0.314
+    },
+    {
+      "name": "Paraguay_683296",
+      "water_km2": 0.645,
+      "permanent_km2": 0.309,
+      "flood_km2": 0.336,
+      "flood_frac_of_water": 0.521
+    },
+    {
+      "name": "Paraguay_868895",
+      "water_km2": 2.436,
+      "permanent_km2": 0.586,
+      "flood_km2": 1.85,
+      "flood_frac_of_water": 0.76
+    },
+    {
+      "name": "Paraguay_511199",
+      "water_km2": 1.023,
+      "permanent_km2": 0.0,
+      "flood_km2": 1.023,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Paraguay_80102",
+      "water_km2": 0.0,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.0,
+      "flood_frac_of_water": 0.0
+    },
+    {
+      "name": "Paraguay_651904",
+      "water_km2": 2.678,
+      "permanent_km2": 1.775,
+      "flood_km2": 0.903,
+      "flood_frac_of_water": 0.337
+    },
+    {
+      "name": "Somalia_699062",
+      "water_km2": 0.052,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.052,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Somalia_60129",
+      "water_km2": 0.003,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.003,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Somalia_685158",
+      "water_km2": 3.119,
+      "permanent_km2": 0.0,
+      "flood_km2": 3.119,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Somalia_166342",
+      "water_km2": 0.001,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.001,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Somalia_94102",
+      "water_km2": 0.773,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.773,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Somalia_322855",
+      "water_km2": 4.801,
+      "permanent_km2": 0.0,
+      "flood_km2": 4.801,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Spain_6860600",
+      "water_km2": 0.013,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.013,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Spain_7558720",
+      "water_km2": 0.427,
+      "permanent_km2": 0.0,
+      "flood_km2": 0.427,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Spain_5650136",
+      "water_km2": 10.968,
+      "permanent_km2": 9.007,
+      "flood_km2": 1.961,
+      "flood_frac_of_water": 0.179
+    },
+    {
+      "name": "Spain_7370579",
+      "water_km2": 6.626,
+      "permanent_km2": 0.0,
+      "flood_km2": 6.626,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Spain_6095801",
+      "water_km2": 2.683,
+      "permanent_km2": 0.0,
+      "flood_km2": 2.683,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Spain_7387658",
+      "water_km2": 16.062,
+      "permanent_km2": 1.782,
+      "flood_km2": 14.28,
+      "flood_frac_of_water": 0.889
+    },
+    {
+      "name": "Sri-Lanka_117737",
+      "water_km2": 1.313,
+      "permanent_km2": 0.045,
+      "flood_km2": 1.268,
+      "flood_frac_of_water": 0.966
+    },
+    {
+      "name": "Sri-Lanka_1049830",
+      "water_km2": 1.062,
+      "permanent_km2": 0.236,
+      "flood_km2": 0.827,
+      "flood_frac_of_water": 0.778
+    },
+    {
+      "name": "Sri-Lanka_534068",
+      "water_km2": 25.943,
+      "permanent_km2": 25.614,
+      "flood_km2": 0.328,
+      "flood_frac_of_water": 0.013
+    },
+    {
+      "name": "Sri-Lanka_922192",
+      "water_km2": 0.502,
+      "permanent_km2": 0.048,
+      "flood_km2": 0.453,
+      "flood_frac_of_water": 0.904
+    },
+    {
+      "name": "Sri-Lanka_377277",
+      "water_km2": 1.292,
+      "permanent_km2": 0.465,
+      "flood_km2": 0.826,
+      "flood_frac_of_water": 0.64
+    },
+    {
+      "name": "Sri-Lanka_649970",
+      "water_km2": 1.894,
+      "permanent_km2": 0.17,
+      "flood_km2": 1.724,
+      "flood_frac_of_water": 0.91
+    },
+    {
+      "name": "Sri-Lanka_450918",
+      "water_km2": 13.925,
+      "permanent_km2": 0.0,
+      "flood_km2": 13.925,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "Sri-Lanka_849649",
+      "water_km2": 0.22,
+      "permanent_km2": 0.092,
+      "flood_km2": 0.128,
+      "flood_frac_of_water": 0.582
+    },
+    {
+      "name": "Sri-Lanka_713926",
+      "water_km2": 9.383,
+      "permanent_km2": 7.854,
+      "flood_km2": 1.528,
+      "flood_frac_of_water": 0.163
+    },
+    {
+      "name": "USA_905409",
+      "water_km2": 4.5,
+      "permanent_km2": 3.956,
+      "flood_km2": 0.544,
+      "flood_frac_of_water": 0.121
+    },
+    {
+      "name": "USA_430764",
+      "water_km2": 1.215,
+      "permanent_km2": 0.0,
+      "flood_km2": 1.215,
+      "flood_frac_of_water": 1.0
+    },
+    {
+      "name": "USA_350244",
+      "water_km2": 0.028,
+      "permanent_km2": 0.005,
+      "flood_km2": 0.023,
+      "flood_frac_of_water": 0.809
+    },
+    {
+      "name": "USA_527077",
+      "water_km2": 0.075,
+      "permanent_km2": 0.026,
+      "flood_km2": 0.049,
+      "flood_frac_of_water": 0.654
+    },
+    {
+      "name": "USA_933610",
+      "water_km2": 0.34,
+      "permanent_km2": 0.14,
+      "flood_km2": 0.2,
+      "flood_frac_of_water": 0.588
+    },
+    {
+      "name": "USA_66511",
+      "water_km2": 0.109,
+      "permanent_km2": 0.002,
+      "flood_km2": 0.106,
+      "flood_frac_of_water": 0.978
+    },
+    {
+      "name": "USA_519181",
+      "water_km2": 0.206,
+      "permanent_km2": 0.047,
+      "flood_km2": 0.159,
+      "flood_frac_of_water": 0.772
+    },
+    {
+      "name": "USA_778194",
+      "water_km2": 0.233,
+      "permanent_km2": 0.084,
+      "flood_km2": 0.149,
+      "flood_frac_of_water": 0.639
+    },
+    {
+      "name": "USA_67102",
+      "water_km2": 1.081,
+      "permanent_km2": 0.726,
+      "flood_km2": 0.355,
+      "flood_frac_of_water": 0.329
+    },
+    {
+      "name": "USA_1049586",
+      "water_km2": 0.151,
+      "permanent_km2": 0.086,
+      "flood_km2": 0.065,
+      "flood_frac_of_water": 0.433
+    },
+    {
+      "name": "USA_595451",
+      "water_km2": 4.811,
+      "permanent_km2": 0.012,
+      "flood_km2": 4.799,
+      "flood_frac_of_water": 0.998
+    },
+    {
+      "name": "USA_670826",
+      "water_km2": 0.055,
+      "permanent_km2": 0.005,
+      "flood_km2": 0.049,
+      "flood_frac_of_water": 0.901
+    },
+    {
+      "name": "USA_504150",
+      "water_km2": 0.245,
+      "permanent_km2": 0.104,
+      "flood_km2": 0.141,
+      "flood_frac_of_water": 0.577
+    },
+    {
+      "name": "USA_758178",
+      "water_km2": 0.087,
+      "permanent_km2": 0.004,
+      "flood_km2": 0.084,
+      "flood_frac_of_water": 0.959
+    }
+  ]
+}

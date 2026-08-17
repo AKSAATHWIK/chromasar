@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ChromaSAR — SAR interpretation with confidence</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="mark"></div>
+    <div>
+      <h1>Chroma<em>SAR</em></h1>
+      <p>SAR interpretation that knows what it doesn't know</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <button class="hamb" id="hamb" aria-label="status">●</button>
+  <div class="pills">
+    <div class="pill" id="pill-device"><i class="dot"></i><span>device</span></div>
+    <div class="pill" id="pill-flood"><i class="dot"></i><span>flood</span></div>
+    <div class="pill" id="pill-color"><i class="dot"></i><span>colorization</span></div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" data-view="flood">Flood mapping</button>
+  <button data-view="color">Colorization</button>
+  <button data-view="about">Method</button>
+</nav>
+
+<main>
+
+<!-- ===================== FLOOD ===================== -->
+<section class="view active" id="view-flood">
+  <div class="layout">
+
+    <!-- ---------- controls ---------- -->
+    <aside>
+      <div class="card">
+        <h3>Scene</h3>
+        <div class="row2">
+          <div>
+            <label for="f-region">Region</label>
+            <select id="f-region"></select>
+          </div>
+          <div>
+            <label for="f-chip">Chip</label>
+            <select id="f-chip"></select>
+          </div>
+        </div>
+        <button class="go" id="f-run">Run detection <kbd>R</kbd></button>
+        <div class="drop" id="f-drop">or drop your own Sentinel-1 GeoTIFF</div>
+        <input type="file" id="f-upload" accept=".tif,.tiff" hidden>
+      </div>
+
+      <div class="card">
+        <h3>Decision</h3>
+        <label for="f-thr">Water probability <b id="f-thr-v">0.50</b></label>
+        <input type="range" id="f-thr" min="1" max="99" value="50">
+        <canvas class="hist" id="f-hist"></canvas>
+        <label class="switch">
+          <span>Exclude permanent water</span>
+          <input type="checkbox" id="f-perm" checked>
+        </label>
+      </div>
+
+      <details class="card adv">
+        <summary><h3 style="margin:0">Advanced</h3></summary>
+        <label for="f-batch-n">Region sweep size <b id="f-batch-n-v">8</b></label>
+        <input type="range" id="f-batch-n" min="2" max="20" value="8">
+        <button class="go ghost" id="f-batch">Sweep region <kbd>B</kbd></button>
+        <div id="f-batch-out"></div>
+      </details>
+
+      <div class="card">
+        <h3>Export</h3>
+        <div class="exports">
+          <button class="mini wide" id="ex-tif">Flood mask · GeoTIFF</button>
+          <button class="mini wide" id="ex-prob">Probability · GeoTIFF</button>
+          <button class="mini wide" id="ex-json">Report · JSON</button>
+          <button class="mini wide" id="ex-png">Current view · PNG</button>
+        </div>
+        <div class="note tiny">GeoTIFFs carry the source georeferencing, so they
+          overlay correctly in QGIS.</div>
+      </div>
+    </aside>
+
+    <!-- ---------- results ---------- -->
+    <div>
+      <div id="f-warn"></div>
+
+      <div class="metrics">
+        <div class="metric cyan"><div class="v num" id="m-flood">—</div><div class="k">Flood extent</div></div>
+        <div class="metric amber"><div class="v num" id="m-iou">—</div><div class="k">IoU</div></div>
+        <div class="metric green"><div class="v num" id="m-prec">—</div><div class="k">Precision</div></div>
+        <div class="metric blue"><div class="v num" id="m-rec">—</div><div class="k">Recall</div></div>
+      </div>
+
+      <figure class="hero">
+        <figcaption>
+          <div class="layers" id="f-layers">
+            <button class="active" data-layer="compare">Compare</button>
+            <button data-layer="pred">Detection</button>
+            <button data-layer="agree">Agreement</button>
+            <button data-layer="vv">SAR VV</button>
+            <button data-layer="vh">SAR VH</button>
+            <button data-layer="perm">Permanent</button>
+          </div>
+          <span id="f-layer-note">drag the divider</span>
+        </figcaption>
+
+        <div class="stage">
+          <div class="compare" id="f-compare" data-pane="compare">
+            <img id="f-vv-b">
+            <canvas id="f-pred" class="top"></canvas>
+            <div class="handle"></div>
+            <div class="lbl l">SAR</div><div class="lbl r">detected</div>
+          </div>
+          <div class="pane" data-pane="pred"><canvas id="f-pred2"></canvas></div>
+          <div class="pane" data-pane="agree"><canvas id="f-agree"></canvas></div>
+          <div class="pane" data-pane="vv"><img id="f-vv"></div>
+          <div class="pane" data-pane="vh"><img id="f-vh"></div>
+          <div class="pane" data-pane="perm"><canvas id="f-perm-map"></canvas></div>
+          <div class="empty" id="f-empty">Pick a scene and press Run detection</div>
+        </div>
+
+        <div class="barfoot">
+          <div class="legend" id="f-legend">
+            <span><i style="background:#3ee08f"></i>hit</span>
+            <span><i style="background:#ff5f6d"></i>false positive</span>
+            <span><i style="background:#5aa6ff"></i>missed</span>
+            <span><i style="background:#1b2b3d"></i>unlabelled</span>
+          </div>
+          <span class="spacer"></span>
+          <span class="chip" id="m-perm-chip">permanent —</span>
+          <span class="chip" id="m-ms-chip">— ms</span>
+        </div>
+      </figure>
+
+      <details class="card report-card" id="f-report-card" open>
+        <summary>
+          <h3 style="margin:0">Situation report</h3>
+          <span class="spacer"></span>
+          <span id="f-sev" class="chip"></span>
+        </summary>
+        <div id="f-alert"></div>
+        <ul id="f-report" class="report"></ul>
+      </details>
+
+      <details class="card">
+        <summary><h3 style="margin:0">Why this works</h3></summary>
+        <div class="note">Water is a <b>specular reflector</b> — it bounces the radar
+          pulse away from the satellite, so open water returns almost no energy and
+          appears near-black. The exception is floodwater under vegetation, which
+          double-bounces off trunks and returns <b>bright</b>: the case a pure threshold
+          misses and a learned model catches. Probabilities are temperature-calibrated,
+          and permanent water from the JRC layer is subtracted so the number reported is
+          <b>new</b> water, not rivers that were always there.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COLORIZATION ===================== -->
+<section class="view" id="view-color">
+  <div class="layout">
+    <aside>
+      <div class="card">
+        <h3>SAR tile</h3>
+        <label for="c-chip">Tile</label>
+        <select id="c-chip"></select>
+        <label for="c-passes">MC-dropout passes <b id="c-passes-v">10</b></label>
+        <input type="range" id="c-passes" min="2" max="24" value="10">
+        <button class="go" id="c-run">Colorize</button>
+      </div>
+      <div class="card">
+        <h3>Confidence gate</h3>
+        <label for="c-thr">Refuse below <b id="c-thr-v">0.00</b></label>
+        <input type="range" id="c-thr" min="0" max="99" value="0">
+        <canvas class="hist" id="c-hist"></canvas>
+        <div class="note tiny">Pixels below the gate return neutral grey —
+          <b>“insufficient evidence”</b> rather than a confident guess.</div>
+      </div>
+    </aside>
+
+    <div>
+      <div id="c-warn"></div>
+      <div class="metrics">
+        <div class="metric amber"><div class="v num" id="cm-conf">—</div><div class="k">Mean confidence</div></div>
+        <div class="metric blue"><div class="v num" id="cm-gated">—</div><div class="k">Gated out</div></div>
+        <div class="metric green"><div class="v num" id="cm-psnr">—</div><div class="k">PSNR vs truth</div></div>
+        <div class="metric"><div class="v num" id="cm-ms">—</div><div class="k">Inference</div></div>
+      </div>
+
+      <figure class="hero">
+        <figcaption>
+          <div class="layers" id="c-layers">
+            <button class="active" data-layer="compare">Compare</button>
+            <button data-layer="out">Colorized</button>
+            <button data-layer="truth">Ground truth</button>
+            <button data-layer="conf">Confidence</button>
+          </div>
+          <span id="c-layer-note">drag the divider</span>
+        </figcaption>
+        <div class="stage">
+          <div class="compare" id="c-compare" data-pane="compare">
+            <img id="c-sar-b">
+            <canvas id="c-out" class="top"></canvas>
+            <div class="handle"></div>
+            <div class="lbl l">SAR input</div><div class="lbl r">colorized</div>
+          </div>
+          <div class="pane" data-pane="out"><canvas id="c-out2"></canvas></div>
+          <div class="pane" data-pane="truth"><img id="c-truth"></div>
+          <div class="pane" data-pane="conf"><canvas id="c-conf"></canvas></div>
+          <div class="empty" id="c-empty">Pick a tile and press Colorize</div>
+        </div>
+      </figure>
+
+      <details class="card">
+        <summary><h3 style="margin:0">Honest limitations</h3></summary>
+        <div class="note"><b>Radar does not measure colour.</b> Part of this output is
+          inference from texture and polarisation; part is the model guessing from
+          learned priors. Running the generator repeatedly with dropout live gives many
+          plausible answers — agreement means evidence, divergence means invention.
+          <b>This model is the weaker half of the project</b>: it reproduces water and
+          high-contrast structure, and tends toward a muddy conditional mean elsewhere.
+          The confidence map is what makes that honest rather than hidden.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="view" id="view-about">
+  <div class="metrics" style="max-width:1150px">
+    <div class="metric amber"><div class="v num">0.681</div><div class="k">Flood IoU — learned</div></div>
+    <div class="metric"><div class="v num">0.550</div><div class="k">Flood IoU — threshold</div></div>
+    <div class="metric green"><div class="v num">0.822</div><div class="k">Precision</div></div>
+    <div class="metric blue"><div class="v num">0.016</div><div class="k">Calibration error</div></div>
+    <div class="metric cyan"><div class="v num">446</div><div class="k">Benchmark chips</div></div>
+  </div>
+  <div class="card" style="max-width:1150px">
+    <h3>Method</h3>
+    <div class="note" style="font-size:13.5px;color:var(--ink-2)">
+      <p style="margin-bottom:11px"><b>SAR</b> satellites fire radar pulses and measure
+      the echo, so they work at night and through cloud — the only sensor that keeps
+      working through the Indian monsoon. The output is a grayscale map of surface
+      texture, not a photograph, and reading it takes years of training.</p>
+      <p style="margin-bottom:11px">Numbers above are the Sen1Floods11 <b>official test
+      split</b> at 512 px, ResNet34 encoder with ImageNet weights. The threshold
+      baseline uses dual polarisation (VV &lt; −18.5 dB OR VH &lt; −24 dB), tuned on
+      validation only. Train/validation splits are by <b>scene</b>, not patch —
+      adjacent tiles of one place on both sides would inflate the score.</p>
+      <p>Probabilities are temperature-calibrated (T = 1.368), reducing expected
+      calibration error from 0.029 to <b>0.016</b> with IoU unchanged.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
