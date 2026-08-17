@@ -63,17 +63,63 @@ only.
 
 ---
 
-## 3. Running it
+## 3. Running it, and getting it onto the demo laptop
+
+**The repo is 31 MB. The model is not in it.** Both checkpoints live under `SIH_DATA`,
+outside the project, so `git clone` alone gives you a backend that starts, a UI that
+renders, a scene list that populates - and a 503 on the first inference click. You do
+not find out until someone clicks. Copy the data, or you have no demo.
+
+### One-time setup on the demo laptop - AT HOME, needs internet
+
+Do this days early, not the night before. It downloads ~550 MB.
 
 ```bash
-setx SIH_DATA "D:\sih-data"
+git clone <repo-url> SIH
 ```
 
 ```bash
 python -m pip install -r chromasar/requirements.txt
 ```
 
-Backend, then frontend:
+```bash
+cd frontend && npm install
+```
+
+Then copy the data. On the **build** laptop, with a USB drive plugged in:
+
+```bash
+python migrate.py pack E:\
+```
+
+That copies ~3.4 GB - the two checkpoints, `sen1floods11/` and `sen1-2/`. It deliberately
+leaves behind `sen12ms/` (~50 GB) and `runs/` (~1.6 GB): both are training-only and the
+server never reads them. Copy that folder onto the demo laptop anywhere you like, then
+point the app at it:
+
+```bash
+setx SIH_DATA "D:\sih-data"
+```
+
+Two traps in that one line, both of which have bitten us:
+- **Use the real path.** A `SIH_DATA` set to a folder that does not exist is *worse* than
+  leaving it unset, because it overrides the working default (`~/sih-data`) and breaks a
+  machine that would otherwise have been fine. If you put the data in `C:\Users\<you>\sih-data`,
+  skip `setx` entirely - that is already the default.
+- **`setx` does not affect the window you type it in.** Open a NEW terminal afterwards.
+
+### Verify - one command, do it before you leave home
+
+```bash
+python migrate.py check
+```
+
+It checks the Python version, every import, the data root and all four required paths,
+`node_modules`, and whether the ports are free. Every line must read PASS. Then **turn the
+wifi off** and click through flood -> change -> color -> method including one upload from
+`demo-uploads/`. Anything that needs the network fails there instead of at the desk.
+
+### Running it - at the venue, offline
 
 ```bash
 python webapp/server.py
@@ -84,6 +130,14 @@ cd frontend && npm run dev
 ```
 
 Landing page at `/`, workspaces at `/flood`, `/change`, `/color`, `/method`.
+
+The backend now **refuses to start** if the checkpoints are missing, and prints which
+files it wanted and which folder it looked in. If you see that, `SIH_DATA` is wrong.
+
+If port 8000 is taken (it is a common default - Docker, other dev servers), set
+`CHROMASAR_PORT` and put the same value in `frontend/.env.local`, because the Next proxy
+in `next.config.mjs` has to point at the same port or every request 404s at the proxy.
+
 Data lives **outside** OneDrive deliberately - several GB inside a synced folder triggers
 an enormous upload.
 

@@ -1,0 +1,35 @@
+# Line endings, pinned - so the same file is byte-identical on both laptops.
+#
+# Without this, Git's Windows default (core.autocrlf=true) checks files out as CRLF.
+# That matters here beyond taste: deck/asciify_notes.py writes TEAM_NOTES.md with
+# newline="\n" explicitly, so a CRLF checkout means the first run rewrites all 540
+# lines and `git diff` shows the whole file changed when nothing did. Normalising to
+# LF everywhere makes the two machines agree.
+
+* text=auto eol=lf
+
+# Windows-native launchers keep CRLF - cmd.exe mis-parses LF-only .bat files.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary: never touch, never diff as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.pptx binary
+*.potx binary
+*.xlsx binary
+*.docx binary
+*.tif binary
+*.tiff binary
+*.pt binary
+*.pth binary
+*.npy binary
+*.npz binary
+
+# Generated - collapse in PR diffs so review stays readable.
+frontend/package-lock.json linguist-generated=true -diff

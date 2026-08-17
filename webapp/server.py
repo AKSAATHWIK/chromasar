@@ -793,6 +793,27 @@ app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
 
 if __name__ == "__main__":
     import uvicorn
-    print(f"device={DEV}  flood_model={FLOOD_CKPT.exists()}  "
-          f"color_model={COLOR_CKPT.exists()}")
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+
+    # Refuse to start without weights, rather than serving a UI that looks alive and
+    # 503s on the first click. The checkpoints live under SIH_DATA, NOT in this repo,
+    # so copying the project folder to another laptop ships no model at all - and the
+    # symptom is silent: the scene list still populates from the dataset, the status
+    # dashboard renders, and only inference fails. That is a bad thing to discover
+    # with a judge standing at your desk. Print the resolved root too: "which folder
+    # did it actually look in" is the whole diagnosis.
+    missing = [p for p in (FLOOD_CKPT, COLOR_CKPT) if not p.exists()]
+    if missing:
+        raise SystemExit(
+            "refusing to start - missing model checkpoints:\n  "
+            + "\n  ".join(str(p) for p in missing)
+            + f"\n\nSIH_DATA resolved to: {DATA_ROOT}\n"
+            "Fix: copy checkpoints/ into that folder, or point SIH_DATA at the right\n"
+            "root and open a NEW shell (setx does not affect the shell you type it in)."
+        )
+
+    # Port is overridable because 8000 is a popular default and a clash is an OSError
+    # at the worst possible moment. Keep it in step with frontend/next.config.mjs,
+    # which proxies /api to the same port.
+    port = int(os.environ.get("CHROMASAR_PORT", "8000"))
+    print(f"device={DEV}  flood_model=True  color_model=True  port={port}")
+    uvicorn.run(app, host="127.0.0.1", port=port)

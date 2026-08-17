@@ -1,4 +1,4 @@
-# ChromaSAR — SAR colorization + flood mapping
+# ChromaSAR - SAR colorization + flood mapping
 # python -m pip install -r requirements.txt
 numpy>=1.26,<3
 pandas>=2.2,<3          # pinned <3: streamlit and others still require it
@@ -7,6 +7,18 @@ matplotlib>=3.8
 tifffile>=2024.1        # Sen1Floods11 multi-band GeoTIFF
 imagecodecs>=2024.1     # compressed TIFF support for tifffile
 torch>=2.2              # CPU wheel is fine locally; GPU only on Modal
-modal>=1.0              # GPU training
+torchvision>=0.17       # ResNet34 encoder in train/resunet.py - flood AND colour
+
+# The demo backend. These were missing until a portability audit tried a clean
+# install and found the server could not start at all: pip's resolver against this
+# file lands on 55 packages and none of them is fastapi, uvicorn or python-multipart.
+# torchvision was the nastiest of the four - the server IMPORTS fine without it and
+# /api/status even reports flood_model:true, so the dashboard looks healthy and the
+# first inference click raises ModuleNotFoundError instead.
+fastapi>=0.110          # webapp/server.py
+uvicorn>=0.27           # webapp/server.py, the ASGI server it calls at __main__
+python-multipart>=0.0.9 # REQUIRED by File()/UploadFile - imported eagerly, not lazily
+
+modal>=1.0              # GPU training only; not needed to run the demo
 # optional, for the pretrained-encoder experiments
 # segmentation-models-pytorch>=0.3
