@@ -220,6 +220,19 @@ def fetch() -> int:
     print(f"target : {root}")
     print(f"source : github.com/{REPO}  release {RELEASE}\n")
 
+    # Ask the release how big each asset is, so we can say so before the
+    # wait rather than leaving someone staring at a still cursor.
+    remote_sizes = {}
+    try:
+        meta = subprocess.run(
+            [gh, "api", f"repos/{REPO}/releases/tags/{RELEASE}"],
+            capture_output=True, text=True, timeout=30)
+        if meta.returncode == 0:
+            for a in json.loads(meta.stdout).get("assets", []):
+                remote_sizes[a["name"]] = a["size"]
+    except Exception:
+        pass          # cosmetic only - never block a download on it
+
     for asset, rel, kind in ASSETS:
         dest = root / rel
         if kind == "file" and dest.exists() and dest.stat().st_size > 1 << 20:
@@ -230,7 +243,12 @@ def fetch() -> int:
             continue
 
         with tempfile.TemporaryDirectory() as td:
-            print(f"  get    {asset} ...", flush=True)
+            want = remote_sizes.get(asset)
+            hint = f"  ({human(want)})" if want else ""
+            print(f"  get    {asset}{hint}", flush=True)
+            if want and want > 200 << 20:
+                print("         large file - gh prints its own progress "
+                      "below; a silent gap after 100% is the unzip", flush=True)
             # Retry deliberately. GitHub returns transient 404s and 503s on these
             # endpoints - we watched the SAME release read "not found" twice and then
             # answer normally on the third call. A one-shot download turns a blip into
@@ -240,15 +258,18 @@ def fetch() -> int:
                 r = subprocess.run(
                     [gh, "release", "download", RELEASE, "--repo", REPO,
                      "--pattern", asset, "--dir", td, "--clobber"],
-                    capture_output=True, text=True)
+                    text=True)
                 if r.returncode == 0 and (Path(td) / asset).exists():
                     break
                 wait = 5 * attempt
-                print(f"         attempt {attempt} failed "
-                      f"({r.stderr.strip()[:80]}); retrying in {wait}s", flush=True)
+                print(f"         attempt {attempt} failed (see gh output above); "
+                      f"retrying in {wait}s", flush=True)
                 time.sleep(wait)
             if r is None or r.returncode != 0 or not (Path(td) / asset).exists():
-                print(f"         FAILED after 4 attempts: {r.stderr.strip()[:200] if r else ''}")
+                print("         FAILED after 4 attempts - see gh's output above.")
+                print(f"         Or download it by hand from:")
+                print(f"           https://github.com/{REPO}/releases/tag/{RELEASE}")
+                print(f"         and extract into {dest}")
                 print("         Re-run `python migrate.py fetch` - it resumes.")
                 return 1
             got = Path(td) / asset
