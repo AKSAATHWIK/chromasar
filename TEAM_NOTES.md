@@ -3,6 +3,21 @@
 **Team 71.** **Internal hackathon: Wed 19 Aug 2026** - SIH portal registration closes **24 Aug**
 (no member or topic changes after that date).
 
+## Which file is which - read this first
+
+| File | What it is | What you do with it |
+|---|---|---|
+| **the running app** | `localhost:3000` | **THIS is what you present.** Judges walk to your desk; you drive the app. Never open a deck at the desk. |
+| `SIH2026-DeltaForce-SIH1733-IDEA-SUBMISSION.pdf` | the official template, filled | **THIS is what you upload.** PDF only - the template says no PPT will be supported |
+| `...IDEA-SUBMISSION.pptx` | source of the above | edit this, then re-export the PDF |
+| `...SAR-Colorization.pptx` | our own richer 7-slide deck | **backup only.** Open it if the app dies, or if someone wants every number on one screen |
+| `71.zip` | `python submit.py 71` | upload to the SharePoint link before you leave |
+| `ROUND1_FEEDBACK.md` | blank log | fill it in AT the 2:30 panel |
+
+**Present the app. Upload the PDF. The decks are artefacts, not a presentation.**
+
+---
+
 Everyone reads **Sections 4, 5 and 10** before the 19th. Section 4 is the 5-minute desk pitch, Section 5 is
 the assumptions judges will grade, Section 10 is the Q&A. Twenty minutes? Read Sections 4 and 5.
 
@@ -487,6 +502,37 @@ never leave us with nothing to show. That is engineering judgement, not scope cr
 **The one-line answer:** *"Colorization is the method the PS asks for. Flood mapping is how
 we prove it improved usability, and it is the only half with hard ground truth - so it is
 what keeps us honest."*
+
+### How to deliver it
+
+**Say the one-liner, then stop.** Do not recite all five reasons unprompted - that sounds
+defensive, which is the failure mode on this question. Let them come back to you.
+
+**If they push, lead with reason 2** (colorization cannot be validated). It is the
+strongest because it flips the question: the expansion becomes *rigour*, not scope creep.
+You did not wander off the problem, you went looking for something you could actually be
+proved wrong about.
+
+**Do NOT volunteer reason 5** - that colorization was the weaker half and flood was the
+hedge. It is true and it is good engineering judgement, but offered unprompted it sounds
+like you did not believe in your own PS. Keep it for a direct question about risk.
+
+**State the causation out loud, in this direction.** The criterion underneath this question
+is *"whether the solution follows from the problem, rather than the problem being
+reverse-engineered to fit a technology you wanted to use."* So answer that, not the
+surface question:
+
+> *"Radar carries no colour. That is physics, not a design choice. Everything else follows
+> from it - the confidence map exists because the model must guess, and the gate exists
+> because a guess should not drive a decision."*
+
+We did not have a GAN and go looking for a use. We had a property of the sensor and built
+what it forced.
+
+**Best defence: change the running order.** Open the demo on `/color` with the confidence
+gate - the PS capability first, in the first forty seconds. If the first thing they see is
+the thing the PS actually asked for, this question often never gets asked at all. Flood
+comes second, introduced as *"and here is how we validated it."*
 
 ---
 
