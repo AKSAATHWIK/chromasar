@@ -40,10 +40,11 @@ S2_LEFT = [
      " radar does not measure colour. Some output is real inference from texture and "
      "polarisation; some is the model guessing from learned priors. A confidently wrong "
      "flood map is worse than no map."),
-    ("Our answer:",
-     " every output ships with a per-pixel confidence map, and that map GATES every "
-     "downstream decision. Below threshold the system reports “insufficient evidence” "
-     "instead of a silent wrong answer."),
+    ("Our USP:",
+     " every pixel carries a CALIBRATED CONFIDENCE, and that map GATES what the system "
+     "is willing to report. Below threshold it says “insufficient evidence” instead of "
+     "a silent wrong answer — and where we measured that a capability does not work, we "
+     "removed it rather than shipping it."),
 ]
 
 S2_RIGHT_HDR = "ALREADY BUILT AND MEASURED"

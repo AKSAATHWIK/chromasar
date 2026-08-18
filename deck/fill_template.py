@@ -53,17 +53,17 @@ CONTENT = {
          "Radar sees through it, but radar is grayscale texture only specialists can read.", False),
         ("Solution: a conditional GAN colorizes Sentinel-1 SAR into optical-like imagery, "
          "trained on 10,000 co-registered SAR–optical pairs.", False),
-        ("Radar carries no colour — so every pixel also ships a CALIBRATED CONFIDENCE. "
+        ("USP — radar carries no colour, so every pixel ships a CALIBRATED CONFIDENCE. "
          "Below your threshold the output goes grey: “insufficient evidence”, not a "
          "confident guess.", False),
         ("That confidence GATES everything downstream — flood extent, change detection "
          "and surface cover are all filtered by it.", False),
-        ("Innovation 1 — we diagnosed why existing models look unsatisfactory. L1 loss is "
+        ("Unique 1 — we diagnosed WHY existing models look unsatisfactory. L1 loss is "
          "minimised by the conditional MEAN of every plausible colour, which is blur by "
          "definition, and PSNR rewards the same thing so standard evaluation cannot see "
          "it. A gradient-difference loss fixed it: sharpness 0.21 → 0.78 of the real "
          "optical, saturation 45% → 102%.", False),
-        ("Innovation 2 — we measure what does not work and refuse to ship it. Built-up "
+        ("Unique 2 — we measure what does not work and REFUSE to ship it. Built-up "
          "land cover from radar alone scores AUC 0.483, below chance, so the app reports "
          "it as unavailable and says why.", False),
     ],

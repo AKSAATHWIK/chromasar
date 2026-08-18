@@ -167,6 +167,38 @@ at a judge standing at your desk; **run the app**.
 
 Most teams will not have a working prototype. You do. Lead with it.
 
+### The USP - one line, then prove it in four seconds
+
+> **"Every pixel carries a calibrated confidence, and it gates what the system is willing
+> to report. Where we measured that something does not work, we removed it."**
+
+Say that, then show it: work the confidence slider in `/color` from 0 to 0.8 and let them
+watch the image go grey. The claim proves itself faster than you can explain it.
+
+**Why that is a USP and not a feature.** Every other team will demo a model that produces
+output. The distinguishing move is a model that *declines* to. Radar carries no colour, so
+any colorization is partly real inference and partly the model guessing from priors.
+Everyone else shows you the guess with no way to tell which is which. We show which is
+which, and we refuse below a threshold the user sets. That is the difference between a
+pretty picture and decision support - for someone routing rescue boats, a confidently
+wrong map is worse than no map.
+
+**For a technical panel, go one level deeper.** The PS says existing models are "not
+satisfactory" and does not say why. That is the actual gap:
+
+> Existing models are unsatisfactory because they train on L1, and L1's optimum is the
+> conditional mean of every plausible colour - blur by definition. PSNR rewards the same
+> thing, so standard evaluation cannot even see the defect. We measured it at 0.21 of the
+> real optical's gradient energy, changed the objective, and got 0.78.
+
+**The proof point nobody else will have.** Built-up land cover from radar alone scores AUC
+0.483, below chance, so we measured it and took it out. Showing a judge a capability you
+DELETED is counterintuitive enough to be memorable, and it retroactively makes every number
+you did keep credible - it is evidence the rest was measured rather than hoped for.
+
+**If you only get 15 seconds:** *"We colorize radar so anyone can read it, and we tell you
+per pixel how much to trust it - including where we refuse to answer."*
+
 ### The four criteria, and your answer to each
 
 | They assess | Your one-line answer |
