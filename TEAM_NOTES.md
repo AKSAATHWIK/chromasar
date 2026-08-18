@@ -1,6 +1,6 @@
 # Delta Force - Team Briefing
 
-**Internal hackathon: Wed 19 Aug 2026** - SIH portal registration closes **24 Aug**
+**Team 71.** **Internal hackathon: Wed 19 Aug 2026** - SIH portal registration closes **24 Aug**
 (no member or topic changes after that date).
 
 Everyone reads **Sections 4, 5 and 10** before the 19th. Section 4 is the 5-minute desk pitch, Section 5 is
@@ -176,7 +176,7 @@ Most teams will not have a working prototype. You do. Lead with it.
 | **2:30-4:00** | Triage and act. ~90 minutes. Do not start a rewrite. |
 | **4:00** | **Round 2 - THIS IS THE SCORED ROUND.** What it scores is how well you engaged with Round 1. Lead with the feedback table. |
 | **until 5:30** | Keep working, improve the deck. |
-| **before you leave** | `python submit.py <team-no>` and upload the zip to the SharePoint link. |
+| **before you leave** | `python submit.py 71` and upload `71.zip` to the SharePoint link. |
 
 **The single most important sentence in the brief:** *"It is not necessary for you to take
 feedback at face value. You may defend yourself."* Round 2 rewards a reasoned response to

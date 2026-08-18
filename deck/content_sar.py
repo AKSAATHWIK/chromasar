@@ -12,7 +12,8 @@ Rewritten after the build started producing real numbers. Two rules applied:
 """
 
 TEAM = "DELTA FORCE"
-TEAM_ID = "(to be filled after portal registration)"
+TEAM_NO = "71"                 # internal hackathon team number
+TEAM_ID = "(to be filled after portal registration)"   # the SIH portal ID - different thing
 
 PS_ID = "SIH1733"
 PS_TITLE = ("SAR Image Colorization for Comprehensive Insight using "

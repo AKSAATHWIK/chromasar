@@ -90,6 +90,7 @@ def main():
             ("Problem Statement Title - ", C.PS_TITLE),
             ("Theme - ", C.THEME),
             ("PS Category - ", C.CATEGORY),
+            ("Team Number - ", C.TEAM_NO),
             ("Team ID - ", C.TEAM_ID),
             ("Team Name - ", C.TEAM)]
     fit_fill(tb, [{"runs": [(k, True), (v, False)], "size": 15, "color": BODY,
