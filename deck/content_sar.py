@@ -43,8 +43,9 @@ S2_LEFT = [
     ("Our USP:",
      " every pixel carries a CALIBRATED CONFIDENCE, and that map GATES what the system "
      "is willing to report. Below threshold it says “insufficient evidence” instead of "
-     "a silent wrong answer — and where we measured that a capability does not work, we "
-     "removed it rather than shipping it."),
+     "a silent wrong answer. Per-pixel uncertainty on SAR is not new — Copernicus GFM "
+     "ships a flood likelihood, and 2026 SAR-to-optical work computes one. But they spend "
+     "it inside the training loss; we calibrate it, show it, and let it GATE the answer."),
 ]
 
 S2_RIGHT_HDR = "ALREADY BUILT AND MEASURED"
@@ -101,7 +102,7 @@ S3_RIGHT = [
 S4_CARDS = [
     ("PROVEN — NOT ASSUMED", "card", [
         "10,000 verified SAR\u2013optical pairs. 0 corrupt, 0 unmatched, 0 duplicate.",
-        "Beats its physics baseline on a public benchmark, official split.",
+        "Beats its physics baseline on a public benchmark, official split — and we say where we sit: IoU 0.681 is competitive, not leading (SAR-only SOTA ~0.72).",
         "Your upload scores identically to our benchmark \u2014 0.00% difference, "
         "three scenes. 43 regression tests.",
         "We found and fixed a bug in our own headline number: flood area read "
@@ -111,14 +112,14 @@ S4_CARDS = [
         "Hallucination \u2014 the network invents colour the radar never carried.",
         "PSNR rewards blur. “It looks right” is not a metric.",
         "Flooded vegetation returns BRIGHT, not dark - the threshold misses it.",
-        "Land cover from radar alone does NOT work: built-up scores AUC 0.483, below chance."
-        "the quantity being reported.",
+        "Land cover from radar alone does NOT work: built-up scores AUC 0.483, "
+        "below chance against bare soil.",
     ]),
     ("HOW WE HANDLE THEM", "card", [
         "Ship the confidence map and refuse below threshold. Hallucination is "
         "surfaced, never hidden \u2014 the differentiator.",
         "A gradient-energy metric that PSNR cannot see \u2014 it caught the blur.",
-        "Learned segmentation where physics fails: IoU 0.550 to 0.681, calibrated."
+        "Learned segmentation where physics fails: IoU 0.550 to 0.681, calibrated "
         "(ECE 0.029 → 0.016).",
         "We measured it and REFUSED to ship it. Cover comes from Sentinel-2 optical "
         "instead; built-up is marked unavailable, on screen.",
@@ -162,8 +163,9 @@ S6_LEFT_HDR = "RESEARCH & REFERENCES"
 S6_LEFT = [
     ("Isola et al., Image-to-Image Translation with Conditional Adversarial Networks "
      "(pix2pix), CVPR 2017", "arxiv.org/abs/1611.07004"),
-    ("Wang et al., High-Resolution Image Synthesis with Conditional GANs (pix2pixHD), "
-     "CVPR 2018", "arxiv.org/abs/1711.11585"),
+    ("Lee et al., OSCAR — uncertainty-aware SAR-to-optical diffusion, 2026. Closest "
+     "prior art: uncertainty stays in the training loss, never reaches the user",
+     "arxiv.org/abs/2601.06835"),
     ("Fuentes Reyes et al., SAR-to-Optical Image Translation Based on Conditional GAN, "
      "Remote Sensing 2019", "mdpi.com/2072-4292/11/17/2067"),
     ("Gal & Ghahramani, Dropout as a Bayesian Approximation — the basis of our "
@@ -180,8 +182,10 @@ S6_RIGHT = [
      "dataspace.copernicus.eu"),
     ("ISRO Bhoonidhi — Indian EO data portal (RISAT, Resourcesat)",
      "bhoonidhi.nrsc.gov.in"),
-    ("ESA SNAP Toolbox — calibration, speckle filtering, terrain correction",
-     "step.esa.int/main/toolboxes/snap"),
+    ("Copernicus GFM — operational global flood service; already ships a per-pixel "
+     "likelihood, on a mask rather than a colorized image", "extwiki.eodc.eu/gfm"),
+    ("ISRO NRSC — operational near-real-time flood inundation via NDEM / Bhuvan",
+     "nrsc.gov.in"),
 ]
 
 # ---------------------------------------------------------------- speaker notes

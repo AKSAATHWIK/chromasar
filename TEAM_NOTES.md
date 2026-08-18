@@ -663,7 +663,18 @@ filled PPT template is uploaded **at the end** of the hackathon.
 - [ ] **Re-export to PDF after filling the Team ID.** The portal takes PDF only - "No PPT,
       Word Doc or any other format will be supported." File > Export > Create PDF. The
       `.pdf` next to the pptx is from before the Team ID went in, so it is stale
-- [ ] Real Sentinel-1 `.tif` on the laptop (Copernicus Browser or ASF Vertex)
+- [ ] **Real Sentinel-1 `.tif` on the laptop.** Highest-value item before 2:30 - "show me
+      it on a scene you did not pick" is the question we are least ready for. Use **ASF
+      Vertex** (search.asf.alaska.edu), not Copernicus Browser: request an **RTC On Demand**
+      product and ASF does the calibration and terrain correction server-side, which is
+      hours of SNAP you do not have. It takes ~20-40 min, so submit the job first and work
+      while it runs. It returns two files, VV and VH, in gamma0 power - the app needs ONE
+      2-band file in dB, so convert:
+      `python chromasar/scripts/prep_sentinel1.py <folder> out.tif --crop 1024`
+      That stacks, converts to dB, carries the georeferencing, and runs the app's own three
+      upload checks so you learn PASSES or WILL BE REJECTED at your desk, not at the panel.
+      On a scene with no label the app shows `n/a` for IoU rather than borrowing a
+      benchmark number - say that out loud, it is the USP applied to our own metrics.
 - [ ] A real before/after pair for change detection - `demo-uploads/` currently holds a
       **synthetic** before-image, clearly labelled. Never present it as two real passes
 - [ ] Laptop charged, app already running before judging starts - do not cold-start in

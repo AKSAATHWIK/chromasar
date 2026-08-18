@@ -54,7 +54,8 @@ CONTENT = {
          "trained on 10,000 co-registered SAR–optical pairs.", False),
         ("USP — radar carries no colour, so every pixel ships a CALIBRATED CONFIDENCE. "
          "Below your threshold the output goes grey: “insufficient evidence”, not a "
-         "confident guess.", False),
+         "confident guess. Per-pixel uncertainty on SAR is not new; what is new is that "
+         "ours is calibrated, shown to the user, and GATES the downstream answer.", False),
         ("That confidence GATES everything downstream — flood extent, change detection "
          "and surface cover are all filtered by it.", False),
         ("Unique 1 — we diagnosed WHY existing models look unsatisfactory. L1 loss is "
@@ -89,6 +90,9 @@ CONTENT = {
          "for the physics baseline. Probabilities calibrated: ECE 0.029 → 0.016.", False),
         ("An uploaded file scores identically to our benchmark — 0.00% difference across "
          "three scenes on three continents.", False),
+        ("Honest positioning: 0.681 beats the Sen1Floods11 published baseline (0.662) and "
+         "matches a supervised SAR-only model (0.676). SAR-only state of the art is ~0.72 "
+         "(DeepSARFlood, IIT Delhi). We are competitive, not leading, and we say so.", False),
         ("Risks, and how we handle them", True),
         ("Hallucination — the network invents colour the radar never carried. → Ship the "
          "confidence map and refuse below threshold. Surfaced, never hidden.", False),
@@ -127,6 +131,13 @@ CONTENT = {
          "paper names SAR colorization as an intended use.  mediatum.ub.tum.de/1436631", False),
         ("Imagery — Sentinel-1 / Sentinel-2 via ESA Copernicus.  "
          "dataspace.copernicus.eu", False),
+        ("Prior art and incumbents", True),
+        ("Copernicus GFM — operational global flood service. Already ships a per-pixel "
+         "likelihood, but on a binary mask, with no colorization.  extwiki.eodc.eu/gfm", False),
+        ("ISRO NRSC — near-real-time flood inundation via NDEM / Bhuvan (EOS-04, "
+         "Sentinel-1). Authoritative, event-triggered, delivered as maps.  nrsc.gov.in", False),
+        ("OSCAR, 2026 — uncertainty-aware SAR-to-optical diffusion. Closest prior art; "
+         "the uncertainty stays in the training loss.  arxiv.org/abs/2601.06835", False),
         ("Methods", True),
         ("Isola et al., Image-to-Image Translation with Conditional Adversarial Networks "
          "(pix2pix), CVPR 2017 — our deliberate baseline.", False),
