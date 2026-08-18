@@ -161,11 +161,39 @@ an enormous upload.
 ## 4. The 5-minute desk pitch - judges walk to you
 
 **Format confirmed by Prof. Raghu:** no formal 10-minute talk. Judges move desk to desk.
-You get **5 minutes**, graded on four things. A completed PPT template is uploaded at the
-END of the hackathon - it is a submission artefact, not a presentation. Do not read slides
-at a judge standing at your desk; **run the app**.
+A completed PPT template is uploaded at the END - it is a submission artefact, not a
+presentation. Do not read slides at a judge standing at your desk; **run the app**.
 
 Most teams will not have a working prototype. You do. Lead with it.
+
+### The day itself - and which round actually counts
+
+| Time | What happens |
+|---|---|
+| **1:30** | In your seats, in the mapped room. Tell the whole team the room. |
+| **before 2:30** | **Paper slip on the laptop cover, serial number big and bold.** Trivial, and the faculty use it to find you. Do it first, not at 2:29. |
+| **2:30** | **Round 1 - mentoring. NOTHING IS SCORED.** They probe and give feedback. Capture every point in `ROUND1_FEEDBACK.md`. |
+| **2:30-4:00** | Triage and act. ~90 minutes. Do not start a rewrite. |
+| **4:00** | **Round 2 - THIS IS THE SCORED ROUND.** What it scores is how well you engaged with Round 1. Lead with the feedback table. |
+| **until 5:30** | Keep working, improve the deck. |
+| **before you leave** | `python submit.py <team-no>` and upload the zip to the SharePoint link. |
+
+**The single most important sentence in the brief:** *"It is not necessary for you to take
+feedback at face value. You may defend yourself."* Round 2 rewards a reasoned response to
+every point, not obedience. A measured disagreement scores; a silently ignored point does
+not. See `ROUND1_FEEDBACK.md` for how to run that.
+
+### What the judges are actually assessing
+
+1. **Do you understand the real problem, and who has it - including competing
+   technologies and products?** See Section 15. This is the one we were weakest on, so
+   read it.
+2. **Does the solution genuinely follow from the problem** - or was the problem
+   reverse-engineered to fit a technology you wanted to use? Our honest answer: the
+   confidence gate exists because radar carries no colour, which is a property of the
+   physics, not a feature we wanted to build. Say it that way round.
+3. **Did you engage with Round 1 feedback?**
+4. **Is there a realistic, buildable 36-hour plan with clear ownership?** Section 16.
 
 ### The USP - one line, then prove it in four seconds
 
