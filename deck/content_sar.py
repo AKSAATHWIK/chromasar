@@ -72,7 +72,7 @@ S3_LEFT = [
     ("Core:", " Python, PyTorch, ONNX Runtime, Modal (GPU)"),
     ("Colorization:", " conditional GAN — U-Net / ResNet34 generator (ImageNet encoder) "
      "+ PatchGAN discriminator"),
-    ("Losses:", " L1 + adversarial + frozen-VGG16 perceptual"),
+    ("Losses:", " L1 + adversarial + frozen-VGG16 perceptual + GRADIENT-DIFFERENCE"),
     ("Uncertainty:", " Monte-Carlo dropout ensemble → per-pixel confidence"),
     ("Flood module:", " dual-polarisation threshold + ResNet34-UNet segmentation"),
     ("Geospatial:", " ESA SNAP, GDAL / Rasterio, QGIS plugin, tifffile; true ground area from the raster’s own georeferencing"),

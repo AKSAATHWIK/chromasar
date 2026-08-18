@@ -224,6 +224,16 @@ satisfactory" and does not say why. That is the actual gap:
 DELETED is counterintuitive enough to be memorable, and it retroactively makes every number
 you did keep credible - it is evidence the rest was measured rather than hoped for.
 
+**If a judge says "someone else already does this":** they may be right, and Section 15
+has the names. Copernicus GFM ships a per-pixel flood likelihood; two 2026 papers compute
+per-pixel uncertainty for SAR-to-optical. Never claim the idea is ours. The narrow claim
+that survives: *they use uncertainty to train better, we use it to decide whether the user
+is allowed to trust the answer* - calibrated, exposed at inference, and gating a downstream
+result. Nobody found doing all three.
+
+**If a judge says "competitive, not leading":** agree first. Our flood IoU 0.681 sits under
+the SAR-only state of the art of ~0.72 (DeepSARFlood, IIT Delhi). Say so before they do.
+
 **If you only get 15 seconds:** *"We colorize radar so anyone can read it, and we tell you
 per pixel how much to trust it - including where we refuse to answer."*
 
@@ -666,3 +676,237 @@ filled PPT template is uploaded **at the end** of the hackathon.
 
 *"Radar sees through the monsoon. We make it readable, we tell you per pixel how much to
 trust it, and where we measured that something does not work, we removed it."*
+
+---
+
+## 15. Who else does this - the competing technologies
+
+Judges assess this explicitly, and until now we had nothing on it. **Say the prior art
+before they ask.** A team that names its competitors sounds like it understands its field;
+a team that gets told about them sounds like it does not.
+
+The short version: **colorized SAR is not new, and per-pixel uncertainty on SAR is not new
+either.** Our claim has to be narrower than "we invented this" - and it survives being
+narrow.
+
+
+### Colorization - the prior art
+
+| What | It does | It does NOT |
+|---|---|---|
+| **ICEYE - Colorized Sub-aperture Image (Dwell mode)** | ICEYE's equivalent CSI product, documented in their product-format spec. Dwell collections are split into 13 sub-apertures over ~25 s; each sub-aperture gets a colour by | Same as Capella: colour is a physics/geometry cue tied to their own Dwell mode, not an optical-look render, and useless to anyone holding Sentinel-1. ICEYE's documentation lists |
+| **Sentinel Hub / Planet - SAR False Color Visualizatio** | Free, widely-used JavaScript evalscripts in the Sentinel Hub custom-scripts library that render Sentinel-1 in false colour from VV and VH - logarithmic and exponential band | Pure deterministic band math - every pixel is a fixed function of VV/VH, so nothing is ever inferred and nothing can be wrong in the way a GAN can be wrong. But equally: the colours are |
+| **Copernicus Emergency Management Service - Global Flo** | Operational, global, systematic Sentinel-1 flood service run by EODC with algorithms from DLR, LIST and TU Wien. Three independent flood detectors are combined by pixel-wise | GFM's likelihood attaches to a binary flood classification, not to a colorized image - it does not colorize SAR at all. The confidence and the imagery are separate products, and there is no |
+| **OSCAR: Optical-aware Semantic Control for Aleatoric ** | Lee, Kim, Shin, Kim & Nam, arXiv 2601.06835, submitted 11 Jan 2026. A diffusion framework with cross-modal semantic alignment plus an 'Uncertainty-Aware Objective': the | On inspection of the paper, the confidence map is used only inside the training loss to down-weight noisy regions - it is not exposed to the user at inference (only visualized at t=T/2 in |
+
+**Say it like this:**
+
+> Colorized SAR is not new and we should say so first: Capella and ICEYE both sell colorized sub-aperture imagery, but their colour encodes scattering direction on their own spotlight satellites, and Sentinel Hub's free version is band math on VV and VH - none of it tells you what the ground looks like, and none of it runs on the Sentinel-1 an Indian district officer actually has. The GAN and diffusion literature does make SAR look optical, and two very recent papers, AWM-GAN and OSCAR, even compute per-pixel uncertainty - but they spend it inside the training loss and throw it away before the user ever sees it, and neither reports calibration or lets it touch a downstream answer. Copernicus GFM does ship a per-pixel likelihood, and IIT Delhi's DeepSARFlood ships ensemble uncertainty at IoU 0.72 on Sen1Floods11, better than our 0.681 - but both are flood masks with no colorization attached. So our claim is narrow and defensible: we ship a calibrated confidence map with the colorized image and let it gate the flood answer, so where the model is guessing the system refuses rather than lies - and we found nobody who does that.
+
+
+### Flood mapping - the incumbents
+
+| What | It does | It does NOT |
+|---|---|---|
+| **Copernicus EMS Rapid Mapping (on-demand activations)** | Human-in-the-loop crisis mapping. An authorised user (usually a national civil-protection authority) triggers an activation; EMS tasks satellites, and analysts deliver | It is event-triggered and gated by authorised-user status: an Indian remote-sensing analyst cannot self-serve an activation, and the service is activated per-event, so it leaves temporal |
+| **ISRO / NRSC near-real-time flood mapping (NDEM + Bhu** | ISRO's own operational flood service, run by NRSC under the Disaster Management Support Programme. NRSC maps flood inundation across India in near real time from multi-date | Honest and narrow. (1) The delivered artefact is a rendered PDF map pushed to agencies on an event trigger - not an interactive tool an analyst drives, with a threshold they can move and |
+
+**Say it like this:**
+
+> "We are not competing with Copernicus EMS or with NRSC - and we know what NRSC has: near-real-time inundation maps from EOS-04 and Sentinel-1, pushed to state agencies through NDEM and Bhuvan, still being issued this month. Those are operational services with satellite tasking, validation teams and a legal mandate, and Copernicus GFM even ships a per-pixel flood likelihood, so we are not claiming uncertainty on SAR is new. Our flood module is a demonstrator, not a service: on the official Sen1Floods11 test split we get 0.681 water-class IoU from radar alone, which beats the dataset's own published baseline of 0.662 and matches a properly trained SAR-only supervised model at 0.676, while the SAR-only state of the art is about 0.72 - IIT Delhi's DeepSARFlood, and Google Research's cross-modal distillation - so we are competitive, not leading, and we say that before anyone asks. What none of them do is what SIH1733 actually asks for: turn the radar image itself into something a non-specialist can read, and then make the model's own calibrated confidence decide what the system is allowed to report at all. Our contribution is that gate - we measured the calibration (ECE 0.029 to 0.016), and we deleted a whole feature, land cover from SAR, when it scored AUC 0.483, below chance."
+
+
+### The two facts that could ambush us
+
+1. **Copernicus GFM already ships a per-pixel likelihood layer** and an explicit
+   "could not decide" exclusion mask, on an operational global flood service. If anyone
+   says "per-pixel confidence on SAR is unique", a judge who knows CEMS will correct us
+   and we lose the room. **We never claim that.** GFM's likelihood attaches to a binary
+   flood mask - there is no colorization for it to score.
+2. **Our flood IoU is competitive, not leading.** 0.681 beats the Sen1Floods11 published
+   baseline (0.662) and matches a properly trained SAR-only supervised model (0.676), but
+   SAR-only state of the art is about **0.72** - IIT Delhi's DeepSARFlood, and Google
+   Research's cross-modal distillation. An Indian panel may well know DeepSARFlood.
+   **Say "competitive, not leading" before anyone asks.** Volunteering it costs nothing;
+   being caught claiming SOTA costs everything.
+
+### So what IS the narrow claim
+
+Two 2026 papers - **AWM-GAN** and **OSCAR** (arXiv 2601.06835) - do compute per-pixel
+uncertainty for SAR-to-optical translation. But both spend it *inside the training loss*
+to down-weight noisy regions; neither exposes it to the user at inference, neither reports
+a calibration metric, and neither lets it touch a downstream answer.
+
+> **They use uncertainty to train better. We use it to decide whether the user is allowed
+> to trust the answer.**
+
+That is the sentence. It concedes the idea is not ours and keeps the part that is.
+
+
+---
+
+## 16. The 36-hour finale plan
+
+Judges assess whether there is a realistic, buildable plan with clear ownership. Do not
+improvise a timeline at the desk - point at this.
+
+**What makes it credible rather than fantasy:** people sleep in it, the six workstreams are
+split by *directory* so two roles never edit the same files, there is a feature freeze at
+H26, and a judge-ready build exists at H+30 with six hours to spare. A plan still coding at
+H35 is a red flag, not ambition.
+
+### The six roles
+
+Six roles, each owning one workstream for the full 36 hours. Directory boundaries are drawn so two roles never edit the same files - that is what makes the parallelism real rather than claimed.
+
+1. MODEL - owns chromasar/train/ (generator, discriminator, losses) and the one GPU job. For 36h: launches and collects the matched-length retrain on Modal (closes TEAM_NOTES Section 6a caveat 1, the 32-vs-45-epoch mismatch), fixes the miscalibrated `balanced` checkpoint-selection metric (Section 6a caveat 2), owns the checkpoint promote/rollback decision, and writes the technical slides. Must be able to explain, cold: why L1's optimum is the conditional mean and therefore blur by definition.
+
+2. DATA/EVAL - owns chromasar/eval/ and chromasar/reports/. For 36h: runs the confidence-ranks-error study (the one Section 11 roadmap row that upgrades the USP), re-measures sharpness / saturation / spatial variance on the 24 held-out tiles for any new checkpoint, and is the single source of truth for every number that appears on a screen or a slide. Countersigns the deck. Owns the scene-level split rationale and the MC-dropout scale (p99 of 2.62M pixels).
+
+3. BACKEND - owns webapp/ and tests/. For 36h: integrator of record - the only role that merges to main. Owns the 43 regression tests plus everything added, the failure paths (missing checkpoint, screenshot-instead-of-GeoTIFF, 1-band file to the 2-band endpoint, network pulled), `migrate.py check` staying all-PASS, and the git tags that make every rollback one command.
+
+4. FRONTEND - owns frontend/. For 36h: keeps the four workspaces judge-proof - the confidence gate as the first control on /color, one-key reset to demo state, locked zoom/pan across layers, `Ctrl+K` scene search, `?` shortcuts. Merges nothing into webapp/. After the H26 freeze, becomes second pair of hands on hardening.
+
+5. GEO/DOMAIN - owns chromasar/geo.py, webapp/geolocate.py, exports, and all real-world imagery. For 36h: acquires and verifies the real Sentinel-1 before/after pair that retires the synthetic one in demo-uploads/, guards the Section 6c per-scene area computation against regression (India read +11.9% high, Pakistan +14.6% before the fix), owns the QGIS hand-off, and answers every "is this physically true" question - why water is dark, and when it is bright.
+
+6. DEMO+DECK - owns deck/ and the pitch. For 36h: captures the fallback screen recording early, runs every mentor round, builds the final deck with `python deck/fill_template.py` and exports to PDF (portal takes PDF only), keeps the Section 11 claims table honest, and drills the team on Section 10 Q&A. Owns the clock: calls the freeze, calls the sleep rotation, calls "stop coding".
+
+Every member must answer at a basic level for any row - judges pick who they ask.
+
+### Hour by hour
+
+| Window | Goal | Owners | Deliverable | Risk |
+|---|---|---|---|---|
+| **H0-H2** | Prove the thing already works, offline, on two machines - before writing a single line of new code. Then fix the scope and refuse to widen | All six. Backend and Demo+Deck lead; Geo/domain verifies data | `python migrate.py check` reading PASS on every line on the primary AND the backup laptop; wifi off, then a full click-through of /flood, /change, /color, /method | Venue wifi cannot serve `pip install`, `npm install` or `migrate.py fetch`, and the repo alone gives a backend that starts, a UI that renders, and a |
+| **H0-H4** | Do everything that needs the internet first, while the connection is good and the team is fresh. After H4 the build runs wifi-off by | Data/Eval, Geo/domain, | A real Sentinel-1 before/after pair over an Indian AOI (Copernicus Browser or ASF Vertex) staged in demo-uploads/ with written provenance and verified end-to-end | Copernicus/ASF throttles, or the AOI has poor coverage or the wrong pass geometry; Modal queues or the budget trips. FALLBACK: hard cutoff at H4 - if |
+| **H4-H10** | Answer the one question the entire USP rests on and which TEAM_NOTES Section 11 currently marks roadmap: does the per-pixel confidence actually rank | Model, | `chromasar/eval/confidence_error.py` plus `chromasar/reports/confidence_error.json` and `.png`: per-pixel confidence binned against measured colour error on | The correlation may be weak - meaning the gate greys out the wrong pixels, which would undercut the headline claim. FALLBACK: report it exactly the |
+| **H4-H12** | Close the analyst hand-off. The PS names remote-sensing image analysts as the users, and analysts work in QGIS - this is the last Section 11 roadmap | Backend, | `qgis/chromasar_plugin/` - a minimal plugin that pulls flood mask, probability and confidence from the local API and loads them as styled layers, installed and | QGIS plugin scaffolding and its bundled Python environment eat the whole window for a cosmetic win. FALLBACK: hard stop at H12, revert the plugin, |
+| **H4-H12** | Make the app judge-proof and capture the evidence early, while the build is known-good - not at H30 when it might not | Frontend, | A recorded 5-minute screen capture of the full run - flood, threshold slider moving IoU/extent live, permanent-water toggle, change, colour with the gate swept 0 to | Recording late means recording a broken build, and a projector/HDMI failure at a desk-to-desk event leaves nothing to show. FALLBACK: this block IS |
+| **H8-H10** | Absorb the finale's first mentor evaluation round as planned work, not as an interruption. Mentor rounds are scheduled events; the plan should show | Demo+Deck presents; all six on call, Data/Eval fields number | A written list of every mentor ask, each triaged within that hour into DO NOW / DO IF TIME / DECLINE-WITH-REASON and signed off by the team. Nothing enters the | A mentor asks for a capability we have measured and rejected - land cover / built-up from SAR is the most likely, since it is the obvious-sounding |
+| **H10-H13** | Land all of day one on main while everyone is still sharp, and hand over cleanly before the sleep rotation | Backend as sole integrator; Model, Data/Eval, Geo/domain, Frontend hand over | Everything from the three day-one tracks merged, 43 existing regression tests green plus a new test for each thing that landed, `migrate.py check` re-run all-PASS, | Four tracks converging at once produces merge conflicts nobody has time to untangle. FALLBACK: the tracks were split by directory precisely so they |
+| **H13-H19** | Night shift one - analysis and evidence only, deliberately no merges to main. Sleep rotation begins: Backend, Frontend and Geo/domain sleep this | Model, Data/Eval, Demo+Deck awake. Backend, Frontend, Geo/domain | Retrain collected from Modal and re-measured on the 24 held-out tiles with the existing metric code - sharpness, saturation, spatial variance - producing a | Tired people making unreviewed changes to a working system at 3am is the classic hackathon self-inflicted wound. FALLBACK: the window is structurally |
+| **H19-H25** | Night shift two - integrate the night's analysis output and hammer the failure paths. Model, Data/Eval and Demo+Deck sleep this window (6h), so every | Backend, Frontend, Geo/domain awake. Model, Data/Eval, Demo+Deck | The promote-or-don't checkpoint decision executed and tested. Every failure path exercised by hand: kill the backend mid-request, upload a screenshot instead of a | A late-night integration breaks something subtle that only surfaces under a judge. FALLBACK: one rule for the window - no change lands without a |
+| **H25-H26** | Everyone in one room, mentor round two, and the hard stop on new capability. This is the integration | All six. Demo+Deck runs the mentor round and calls the | FEATURE FREEZE AT H26 - a signed commit tagged `finale-freeze`, after which no new capability may be STARTED by anyone. Mentor round two triaged into hardening-only | The freeze slips because one track is 'nearly done' - the single most common way a 36-hour plan turns into coding at H35. FALLBACK: the freeze is a |
+| **H26-H30** | Reach the H+30 gate: a build a judge could walk up to right now, with no caveats and no 'just let me restart | Backend, Frontend, Data/Eval, Geo/domain (all | Full test suite green. WIFI OFF for the entire window, both laptops, full demo path clicked through including one upload and one GeoTIFF export opened in QGIS. | A failure surfaces here with no time left to fix it properly. FALLBACK: roll back to `finale-freeze`, or all the way to `finale-h0` - every tag in |
+| **H26-H32** | Convert the build into the graded submission artefacts, in parallel with hardening so neither is rushed. Includes a mandatory rotating 90-minute rest | Demo+Deck leads; Model writes the technical slides; Data/Eval countersigns | Final deck rebuilt with `python deck/fill_template.py` in the official template, exported to PDF (the portal accepts PDF only), carrying the measured results table, | A number in the deck drifts from what the app prints - the fastest way to lose a technical panel. FALLBACK: every figure is pasted from |
+| **H32-H35** | Rehearse the way it will actually happen - desk-side, timed, hostile, and | All six. Demo+Deck holds the stopwatch; Data/Eval and Geo/domain play the | Two full timed run-throughs with wifi off - one at 5 minutes, one cut to 90 seconds - each driven by a DIFFERENT member. Then a hostile pass where two members ask | Only one person can actually run the demo, and judges pick who they ask. FALLBACK: rotation is the entire point of the drill - by H35 at least three |
+| **H35-H36** | Do nothing, deliberately. Standby with the demo already | All | App already running and warmed (first inference already fired) before judging starts, both laptops charged and on mains, backup laptop running the identical build, | Someone makes a last-minute 'quick fix' and breaks a frozen, working build - or the app is cold-started in front of the first judge and the 5-second |
+
+---
+
+## 17. What Round 1 will probably say, and the answer
+
+Predicted, so nobody is surprised at 2:30. Log what they *actually* say in
+`ROUND1_FEEDBACK.md` - this is the rehearsal, not the script.
+
+`defend-instead` means the notes already contain a principled answer and changing course
+would be **wrong**. The brief explicitly allows defending; a measured disagreement scores.
+
+
+**1. "How is this different from what already exists? NRSC already publishes flood maps from RISAT and Sentinel-1 every monsoon. Who else is working on this and why are you better?"**  `must-address`
+
+> Three layers of prior art. Operational services - NRSC's Bhuvan flood products, Copernicus EMS Rapid Mapping, UNOSAT, Sentinel Asia - produce authoritative flood extents but on a request-and-turnaround basis, and none of them publish a per-pixel trust value the user can threshold. Free recipes - the UN-SPIDER Sentinel-1 flood practice on Google Earth Engine - are the physics threshold, which is exactly our 0.550 baseline that we beat at 0.681. Commercial - ICEYE sells flood insights, Planet and Maxar sell cloud-free optical tasking, which is the thing SAR removes the dependence on. And on colorization specifically, Fuentes Reyes 2019 and the SAR2Opt line of work are the closest academic prior art; we cite them. What none of them ship is uncertainty that gates the output.
+
+*Do:* Write a single 'How this compares' block - five rows: incumbent, what it does, what it does not do, our difference. Put it on /method so it is on screen, and print one copy for the desk. 30 minutes. Also add the four names above to the Section 10 Q&A so any of the six can answer it. Do not claim you beat NRSC operationally - you are comparing on the confidence dimension only, say so.
+
+**2. "Show me it working on a scene you did not pick. Download one from Copernicus and run it."**  `must-address`
+
+> Honest answer: today we are validated on two public benchmarks with published splits, and a benchmark chip re-uploaded through the user path scores identically to 0.00%. What we have not yet done is ingest a raw Sentinel-1 GRD end to end - that needs calibration and terrain correction, which is a preprocessing chain, not a model problem. Here is one real scene we preprocessed ourselves, and here is what it looks like.
+
+*Do:* Highest-value hour before 2:30, not after. Get one genuine Sentinel-1 scene onto the laptop, calibrated to dB - the cheap route is an ASF HyP3 RTC product, which already comes radiometrically terrain corrected, rather than calibrating a raw GRD by hand. Run flood AND colorization on it and look at the result honestly. If the colouriser degrades on it, that is a finding to show, not to hide. Second, fix the upload error message so it does not instruct users to do something the next check rejects. If you cannot get a scene in time, say the sentence above and put the ingest chain in the finale plan as a named deliverable.
+
+**3. "What exactly will the six of you build in the 36 hours at the finale, and who does what?"**  `must-address`
+
+> Do not improvise a timeline at the desk. Point at a printed plan.
+
+*Do:* Free marks, and it needs writing today, not between rounds. Fill the six names into Section 12 first - five minutes. Then write a 36-hour plan into TEAM_NOTES.md so the ROUND1_FEEDBACK.md pointer resolves: hour blocks (0-4 env and data on venue hardware, 4-14 build, 14-22 integrate, 22-28 harden and test, 28-33 rehearse, 33-36 buffer and submission), each block with a named owner and a named artifact, plus an explicit scope-cut ladder - 'if we are behind at hour 22 we drop the QGIS plugin, then the Swin generator, and we never cut the confidence gate.' Judges reward the cut list more than the plan; it is the thing that proves you have built under deadline before.
+
+**4. "You keep saying every pixel has a *calibrated* confidence. Calibrated against what? Show me the curve."**  `must-address`
+
+> Precisely: on flood the probabilities are calibrated, temperature-scaled, ECE 0.016 - 0.7 means 0.7. On colour, confidence is the measured MC-dropout spread with the scale set at the p99 of 2.62 million validation pixels rather than guessed. What we have not yet proven is that it *ranks* error on colour. That is the honest boundary and we mark it as roadmap.
+
+*Do:* Two things, and the second is the single best use of the 90 minutes. (1) Stop saying 'calibrated' about colour in the spoken pitch - say 'measured'. (2) Actually compute the curve: for the 24 held-out tiles you already have, bin pixels by confidence and plot mean absolute error against confidence. If error falls as confidence rises, you have converted your biggest hole into your strongest slide by 4:00, and you can say 'you asked at 2:30, here it is'. chromasar/eval/metrics.py and eval/showcase.py already load exactly this data. If the curve comes out flat, do not show it - say the roadmap line, which still beats bluffing. Fix the slide 3 wording either way.
+
+**5. "Analysts already make a false-colour composite from VV, VH and their ratio. That is real polarimetry, not a hallucination. Why is your GAN better than three lines of band maths?"**  `must-address`
+
+> Fair, and for a trained analyst the dual-pol composite is often the better tool - we should say that. But it maps polarisation to colour, not scene semantics: the colours mean 'this surface depolarises', they do not mean 'that is a field and that is a town'. Anyone who cannot already read radar still cannot read it. And it carries no notion of where the interpretation is unreliable, so there is nothing to gate on. Our claim is not that we replace it; it is that we make the scene legible to a non-specialist and attach a trust value they can threshold.
+
+*Do:* Do not just prepare the sentence - build the panel. You already render SAR VV and SAR VH as separate layers in /flood, so the RGB composite is (VV, VH, VV-VH) on data you already have in memory. If a static PNG on /method is all you can manage in 90 minutes, do that: composite, colorized, confidence, ground truth, side by side, one scene. That image answers the question permanently and shows a judge you engaged with their point rather than deflecting it.
+
+**6. "Is this actually novel, or is it pix2pix with extra steps? The PS asks for a novel DL model."**  `defend-instead`
+
+> The layer diagram is deliberately pix2pix-family, because row one of our ablation has to be an honest baseline. The novelty is in the objective and the evaluation: a gradient-difference loss aimed at a failure mode we measured, a per-pixel uncertainty whose scale is measured over 2.62 million pixels rather than chosen, uncertainty that actually gates downstream analytics, and a sharpness metric that made a defect visible which PSNR and SSIM could not see. Swapping in a Swin or a diffusion backbone is a weekend. Knowing which loss causes the blur, and having a metric that can see it, is the part that took the work.
+
+*Do:* Defend, but fix one self-inflicted wound: deck slide 3 lists the losses as 'L1 + adversarial + frozen-VGG16 perceptual' and omits the gradient-difference loss - the exact thing you call your novelty. Same slide lists 'QGIS plugin' under technologies, which Section 11 marks roadmap. Correct both in deck/content_sar.py and rebuild, or at minimum know not to point at that slide.
+
+**7. "Your PS is SAR colorization. Why have you built a flood detector? Did you pick the problem, or did you have a model and go looking for a problem?"**  `defend-instead`
+
+> Colorization is the method the PS names. Usability is the goal it states. Flood mapping is how we prove usability actually improved, and it is the only half with hard ground truth - 446 hand-labelled masks on a published test split - so it is what keeps us honest. A confidence map also needs a consumer: flood is what turns 'here is an uncertainty map' into 'low-confidence regions never raise an alert'.
+
+*Do:* Defend the scope, change the running order. Open on /color with the confidence gate - the PS capability first, the gate demo in the first forty seconds - then go to flood as the validation, framed as 'and here is how we prove the colour output improved something measurable'. Same content, and the scope objection stops forming. Ten minutes of rehearsal, no code.
+
+**8. "Who is your user, actually? Remote-sensing analysts read SAR for a living - they do not need it coloured in. Have you spoken to one?"**  `must-address`
+
+> Two tiers, and they want different artifacts. The analyst is the PS's named user and gets the analyst product: georeferenced GeoTIFF straight into QGIS, calibrated probabilities, and a confidence layer they can threshold - that is a workflow improvement, not a colouring-in. The colour output is for the tier below them: the district officer or SDMA duty operator who receives the analyst's product and has to act on it in an hour. And to be straight with you, we have not yet sat with either. That is our biggest non-technical gap and it is on our finale plan.
+
+*Do:* Do not fake user research in 90 minutes. Do write the two-tier user story into TEAM_NOTES.md with a named artifact for each tier, and name one real person you will approach before the finale - a geoscience or civil faculty member on campus who works with EO data is a reachable first user, and 'we will talk to X by date Y' scores far better than a vague persona. Owning the gap out loud is worth more here than covering it.
+
+**9. "What is your business model? Who pays for this, and what does it cost to run for all of India?"**  `should-address`
+
+> It is not a product for sale - it is an open-source capability for the agency that already owns the mandate. Deployment is a workstation or a small server inside NRSC or a state disaster management authority: CPU-only inference, 1.1 seconds a scene, no GPU, no cloud dependency, no per-scene licence, and nothing leaves the building - which matters for anything defence-adjacent. Integration is via GeoTIFF into existing GIS workflows, so it slots beside Bhuvan rather than competing with it.
+
+*Do:* Spend 15 minutes doing the arithmetic rather than waving at it. 1.1 s per scene on one laptop core times the number of Sentinel-1 scenes in an India-wide pass gives you a core-hours figure - that single number turns 'no cost model' into 'a national daily run costs less than one workstation'. Add three lines to /method: hosting, licence, integration point. Pick a licence and say it.
+
+**10. "You invented the metric your model wins on. And your perceptual distance got 36% worse - by a standard metric your new model is worse than your old one."**  `defend-instead`
+
+> Yes, we built the metric - because the existing ones are structurally blind to the defect. L1's optimum is the conditional mean of every plausible colour, which is blur by definition, and PSNR rewards exactly that, so the metric we were selecting checkpoints on could not see the problem. The independent check is SSIM, which we did not design and which improved, 0.175 to 0.200, and SSIM is structure-sensitive - it agrees that real detail appeared rather than noise. PSNR fell about 1 dB and perceptual distance rose 36%, and both are the expected signature of removing blur. We report the losses next to the gains; that is the trade and we made it deliberately.
+
+*Do:* Defend, and make the honesty visible: put the full A-vs-B ablation table - sharpness, perceptual, PSNR, SSIM, with the two regressions in the same colour as the wins - on /method where a judge can see it, not just in the notes. A judge who finds the bad number himself scores you very differently from one you hand it to.
+
+**11. "IoU 0.681 - is that good? What does the state of the art get on Sen1Floods11?"**  `should-address`
+
+> Our comparison is deliberately against the physics threshold on the identical split, because that is the method actually deployed in operational flood recipes - beating it is the operationally meaningful claim. Against published learned baselines on the same benchmark we are in the same band, and we have not chased the leaderboard because calibration and confidence-gating were the contribution, not the last two IoU points.
+
+*Do:* Look up the numbers the Sen1Floods11 paper reports for its own trained models and put them in a row next to yours on /method - do this before you leave home, because you will be offline at the venue. If you land below them, say so and say why (scene-level split, no ensembling, no test-time augmentation). Being under a published number with a stated reason costs you nothing; not knowing the number costs you the technical judge.
+
+**12. "Wait - is that before-image real? Are these two actual satellite passes?"**  `must-address`
+
+> That before-image is synthetic and labelled as such - we generated it by infilling real SAR texture from the same scene so the speckle statistics are genuine. It demonstrates the differencing path; it is not two real passes.
+
+*Do:* Binary decision before 2:30, made by the whole team so nobody improvises. Either get a genuine before/after Sentinel-1 pair over one footprint onto the laptop, or cut /change from the walkthrough entirely and only open it if asked. If you keep it, the word 'synthetic' must be the first word out of your mouth when the tab opens - not the answer to a question.
+
+**13. "You say this scales onto RISAT and NISAR. NISAR is L-band and S-band. Your model is trained on C-band Sentinel-1."**  `should-address`
+
+> RISAT is C-band like Sentinel-1, so transfer is plausible with fine-tuning on Indian scenes. NISAR is L-band and S-band and the backscatter physics is genuinely different - that is a retrain on NISAR pairs, not a redeploy, and we would budget it as such. What transfers unchanged is the method: the objective, the uncertainty layer and the gate are sensor-agnostic.
+
+*Do:* Correct the wording in deck/content_sar.py from 'scales onto' to the honest version, and rehearse the distinction. Whoever owns the pitch should know which Indian SAR platforms are which band before a judge asks. Cheap, and getting it wrong in front of an ISRO-facing panel is expensive.
+
+**14. "Twenty-four tiles? And you used ten thousand pairs out of the two hundred eighty thousand in SEN1-2. How much of your colorization result is noise?"**  `should-address`
+
+> Ten thousand pairs across 164 scenes and four seasons was the compute budget - the whole training run cost about three dollars on Modal, and we chose breadth of scene and season over raw count so the split by scene would be meaningful. Twenty-four tiles is small and we should extend it; the effect size is 3.7x, which is not a marginal difference, but a wider evaluation is the right ask.
+
+*Do:* This is genuinely cheap and it is pure credibility: rerun the sharpness and saturation measurement over a few hundred held-out tiles instead of 24. It is CPU work on data already on disk, chromasar/scripts/compare_models.py already computes exactly this over a tile list, and turning n=24 into n=200 by 4:00 is a concrete, visible response to a Round 1 point. Report the new mean and the spread.
+
+**15. "Walk me through your preprocessing. Calibration, speckle filtering, terrain correction - what do you actually run?"**  `should-address`
+
+> Both benchmarks ship calibrated and terrain-corrected, so today we consume them directly and do our own dB clipping to minus-thirty to zero and a scene-level split. We do not run SNAP today - it is what the raw-GRD ingest path needs, and that path is on the finale plan, not in the current build. We would rather say that than claim a chain we have not executed.
+
+*Do:* Either remove SNAP from slide 3 or make it explicitly a finale deliverable with an owner. Then name the raw-GRD ingest chain - calibrate, speckle filter, terrain correct, convert to dB - as a specific 36-hour work item. It pairs directly with the 'data you did not choose' critique and answering both with one deliverable is efficient.
+
+**16. "So what is the accuracy of the colorization? Give me one number."**  `should-address`
+
+> There isn't one, and that is the honest answer - nothing in a radar echo says a roof is red, so there is no ground truth to score against. What we can measure is whether the output has the statistical structure of real imagery: sharpness is 0.78 of real optical, up from 0.21, and saturation is 102%. And where we cannot know, we say so per pixel instead of guessing - that is what the grey areas are. The number we do have a hard truth for is flood: 0.681 on hand-labelled masks.
+
+*Do:* Rehearse this as a fifteen-second answer, out loud, twice. It is the most likely question from the least technical judge in the room and it is currently a paragraph in Section 10 rather than a reflex. Whoever owns uncertainty should be able to deliver it without looking at anything.
+
+**17. "The PS names geological studies. You have shown me floods. Where is the geology?"**  `defend-instead`
+
+> Named in the PS and not demonstrated, deliberately. The pipeline is identical - same colouriser, same confidence gate, different downstream consumer. What we do not have is geological ground truth to validate against, and our whole position is that we do not ship claims we cannot score. Flood mapping had 446 hand-labelled masks on a published split; lithology would need GSI-grade reference data we do not have. It is a finale deliverable with a data dependency, and we would rather name the dependency than show you an unvalidated map.
+
+*Do:* Defend. Do not build anything. Do add it to the 36-hour plan as a named item with its blocking dependency written next to it - that converts an admitted gap into evidence of planning, which is criterion (d).
+
+**18. "Your B run is 32 epochs and your shipped model is 45. That is not a controlled comparison."**  `defend-instead`
+
+> Correct, and it is caveat one in our own notes. B is 32 epochs against a shipped model trained for 45, so it is not length-matched - but B wins sharpness by 5.7x, which is not a thirteen-epoch effect. A matched-length rerun is the clean claim and it is on the list. While we are here, the related bug is worth knowing: our checkpoint-selection metric was miscalibrated and would have picked the blurriest epoch, so we used last.pt. We found that by reading the numbers rather than trusting the machinery.
+
+*Do:* Volunteer it before it is asked - it is in the 3:15-4:00 assumptions block already. If there is idle GPU budget, a matched 45-epoch B run could be launched on Modal during the gap and reported at the finale, but do not make the 4:00 demo depend on a training run finishing.
