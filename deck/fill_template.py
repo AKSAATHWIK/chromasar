@@ -40,7 +40,6 @@ TITLE_BLOCK = [
      "Insight using Deep Learning Model", True),
     ("Theme – Space Technology", False),
     ("PS Category – Software", False),
-    ("Team ID – <FILL BEFORE UPLOAD>", False),
     (f"Team Name – {TEAM}", False),
 ]
 
